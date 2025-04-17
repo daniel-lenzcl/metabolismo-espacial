@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcee9488561d8864d9afb052f862ced5, type: 3}
+  m_Name: atv Casa
+  m_EditorClassIdentifier: 
+  nome: casa
+  capacidade: 2
+  predio: {fileID: 3367831186530481833, guid: b230bd2d42828ba40b638e0ba8ce6e18, type: 3}
+  horarios: 
+  horaComeca1: 18
+  horaFim1: 8
+  horaComeca2: 0
+  horaFim2: 0
