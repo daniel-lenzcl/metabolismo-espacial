@@ -1,0 +1,254 @@
+using UnityEngine;
+using UnityEngine.AI;
+
+public class Rotina : MonoBehaviour
+{
+    public cPessoa pessoa; // referência a mPessoa
+    private NavMeshAgent agente;
+    public float custo;
+    private float tempo;
+    private GameObject geral;
+    private Vector3 destino;
+
+    void Awake()
+    {
+        DebugController.Log(DebugCategoria.tracking, $"Awake ▸ tracking");
+
+        geral = GameObject.Find("Terrain");
+        configNavAgent();
+    }
+
+    void Start()
+    {
+        DebugController.Log(DebugCategoria.tracking, $"Start ▸ tracking");
+
+        //        agente.speed = 10f;
+        if (pessoa != null && pessoa.MminhaCasa != null)
+        {
+            IrParaCasa();
+        }
+        pessoa.OnCasaDefinida.AddListener(IrParaCasa);
+        //        tempo = geral.GetComponent<horas>().hora;
+
+        horas relogio = FindObjectOfType<horas>();  // Encontre o Relógio
+        if (relogio != null)
+        {
+            relogio.MudouHora.AddListener(AtualizaDestino);
+        }
+
+    }
+    
+    void Update()
+    {
+        //DebugController.Log(DebugCategoria.tracking, $"Update ▸ tracking");
+
+        /*
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(transform.position, out hit, 10.0f, NavMesh.AllAreas))
+        {
+            int areaMask = hit.mask;
+            // Descobrir o índice da área
+            int areaIndex = Mathf.RoundToInt(Mathf.Log(areaMask, 2));
+            // Descobrir o custo da área (cuidado: depende de onde você configurou)
+            custo = NavMesh.GetAreaCost(areaIndex);
+            Debug.Log($"Agente está na área: (ID: {areaIndex}) com custo: {custo}");
+        }
+        */
+
+        /*
+        bool rodadia = geral.GetComponent<horas>().rodadia;
+        if (rodadia)
+        {
+            tempo = geral.GetComponent<horas>().hora;
+            ////////////////////////////////////estrutura de destino poderia ser uma lista de destinos da classe. dai faria 'if' pra ver se deu a hora vigente, incrementa, e passa
+            ///////////////////////////////////para o proximo da lista. mas nao implementado ainda, pensar a respeito para outra versao (pos testes)
+
+            if (tempo <= 2)
+            {
+                //                IrParaCasa();
+                destino = pessoa.MminhaCasa.enderecoXYZ; //euPessoa.minhaCasa.enderecoXYZ; //casa;
+//                Debug.Log($"{tempo} indo para casa {pessoa.MminhaCasa.nomePredio} no {destino}");
+
+            }
+            if (tempo >= 2 && tempo <= 18)
+            {
+                //                IrParaTrabalho();
+                destino = pessoa.MmeuTrabalho.enderecoXYZ;//euPessoa.meuTrabalho.enderecoXYZ;//trabalho;
+//                Debug.Log($"{tempo} indo para trabalho {pessoa.MmeuTrabalho.nomePredio} no {destino}");
+
+            }
+            if (tempo >= 14)// && tempo <= 23)
+            {
+                //                IrParaCasa();
+                destino = pessoa.MminhaCasa.enderecoXYZ; //euPessoa.minhaCasa.enderecoXYZ; //casa;
+//                Debug.Log($"{tempo} indo para casa {pessoa.MminhaCasa.nomePredio} no {destino}");
+
+            }
+
+            if (agente.isOnNavMesh)
+            {
+                // Verifica se o destino está válido e acessível
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(destino, out hit, 100.0f, NavMesh.AllAreas))
+                {
+                    // Ajusta a posição do destino para a altura correta da NavMesh
+                    Vector3 destinoAjustado = new Vector3(destino.x, hit.position.y, destino.z);
+
+                    // Calcula o caminho até o destino ajustado
+                    NavMeshPath path = new NavMeshPath();
+                    agente.CalculatePath(destinoAjustado, path);
+
+                    // Verifica se o caminho é válido
+                    if (path.status == NavMeshPathStatus.PathComplete)
+                    {
+                        // O caminho é viável, então o agente pode ir para o destino
+                        agente.SetDestination(destinoAjustado);
+                        Debug.Log($"Destino ajustado para {destinoAjustado}");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Não foi possível calcular um caminho até {destinoAjustado}");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"Destino {destino} não está acessível na NavMesh!");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"{pessoa.identidade} não está sobre a NavMesh.");
+            }
+            //jogador.SetDestination(destino);   
+            //DESCOBRIR PQ O TERRENO E A NAVMESH TA SE MEXENDO JUNTO COM O JOGADOR -  terreno estava com funcao de agente tb (o q significa funcao de agente tb?)
+        }
+        */
+    }
+
+    private void AtualizaDestino()
+    {
+        DebugController.Log(DebugCategoria.tracking, $"Update ▸ tracking");
+
+        tempo = geral.GetComponent<horas>().hora;
+        string dest = "";
+        ////////////////////////////////////estrutura de destino poderia ser uma lista de destinos da classe. dai faria 'if' pra ver se deu a hora vigente, incrementa, e passa
+        ///////////////////////////////////para o proximo da lista. mas nao implementado ainda, pensar a respeito para outra versao (pos testes)
+        if (tempo <= 2)
+        {
+                //                IrParaCasa();
+            destino = pessoa.MminhaCasa.enderecoXYZ; //euPessoa.minhaCasa.enderecoXYZ; //casa;
+            dest = pessoa.MminhaCasa.nomePredio;
+            //                Debug.Log($"{tempo} indo para casa {pessoa.MminhaCasa.nomePredio} no {destino}");
+        }
+        if (tempo >= 2 && tempo <= 18)
+        {
+                //                IrParaTrabalho();
+            destino = pessoa.MmeuTrabalho.enderecoXYZ;//euPessoa.meuTrabalho.enderecoXYZ;//trabalho;
+            dest = pessoa.MmeuTrabalho.nomePredio;
+            //                Debug.Log($"{tempo} indo para trabalho {pessoa.MmeuTrabalho.nomePredio} no {destino}");
+        }
+        if (tempo >= 14)// && tempo <= 23)
+        {
+                //                IrParaCasa();
+            destino = pessoa.MminhaCasa.enderecoXYZ; //euPessoa.minhaCasa.enderecoXYZ; //casa;
+            dest = pessoa.MminhaCasa.nomePredio;
+            //                Debug.Log($"{tempo} indo para casa {pessoa.MminhaCasa.nomePredio} no {destino}");
+        }
+        Debug.Log($"AtualizaDestino ▸ tracking hora: {tempo} indo para {dest} no {destino}");
+
+        ChecaDestinoNavMesh();
+    }
+    
+    private void ChecaDestinoNavMesh()
+    {
+        if (agente.isOnNavMesh)
+        {
+            // Verifica se o destino está válido e acessível
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(destino, out hit, 100.0f, NavMesh.AllAreas))
+            {
+                // Ajusta a posição do destino para a altura correta da NavMesh
+                Vector3 destinoAjustado = destino;// new Vector3(destino.x, hit.position.y, destino.z);
+
+                // Calcula o caminho até o destino ajustado
+                NavMeshPath path = new NavMeshPath();
+                agente.CalculatePath(destinoAjustado, path);
+
+                // Verifica se o caminho é válido
+                if (path.status == NavMeshPathStatus.PathComplete)
+                {
+                    // O caminho é viável, então o agente pode ir para o destino
+                    agente.SetDestination(destinoAjustado);
+                    Debug.Log($"Destino ajustado para {destinoAjustado}");
+                }
+                else
+                {
+                    Debug.LogWarning($"Não foi possível calcular um caminho até {destinoAjustado}");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"Destino {destino} não está acessível na NavMesh!");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"{pessoa.identidade} não está sobre a NavMesh.");
+        }
+    }
+
+    private void configNavAgent()
+    {
+        agente = GetComponent<NavMeshAgent>();
+        GameObject obj = GetComponent<GameObject>();
+        if (agente == null)
+        {
+            Debug.LogWarning("NavMeshAgent não encontrado!");
+            DebugController.LogWarning(DebugCategoria.Rotina, $"Awake ▸ NavMeshAgent não encontrado!");
+            agente = gameObject.AddComponent<NavMeshAgent>();
+            DebugController.LogWarning(DebugCategoria.Rotina, $"Awake ▸ NavMeshAgent criado!");
+        }
+        
+        
+        // Ajusta a velocidade do agente
+        agente.speed = 30.0f;  // A velocidade máxima do agente
+
+        // Ajusta a aceleração (como rapidamente o agente atinge a velocidade máxima)
+        agente.acceleration = 500.0f;  // Aceleração
+
+        // Ajusta a velocidade angular (velocidade com que o agente vira)
+        agente.angularSpeed = 120f;  // Quanto maior, mais rápido o agente gira
+
+        // Ajusta o raio do agente (determinando o tamanho da colisão)
+        agente.radius = 0.5f;  // O raio do agente (quanto maior, mais espaço o agente ocupa)
+        
+        
+    }
+
+    public void IrParaCasa()
+    {
+        DebugController.Log(DebugCategoria.tracking, $"IrParaCasa ▸ tracking");
+
+//        if (agente != null)
+//            agente.SetDestination(pessoa.MminhaCasa.enderecoXYZ);
+
+        agente.SetDestination(pessoa.MminhaCasa.enderecoXYZ);
+    }
+
+    public void IrParaTrabalho()
+    {
+        DebugController.Log(DebugCategoria.tracking, $"IrParaTrabalho ▸ tracking");
+
+  //      if (agente != null)
+  //          agente.SetDestination(pessoa.MmeuTrabalho.enderecoXYZ);
+        agente.SetDestination(pessoa.MmeuTrabalho.enderecoXYZ);
+    }
+
+    public void OnDestroy()
+    {
+        DebugController.Log(DebugCategoria.tracking, $"OnDestroy ▸ tracking");
+
+        pessoa.despedida();
+    }
+    // Aqui você pode criar um método para atualizar a rotina baseado na hora, etc.
+}

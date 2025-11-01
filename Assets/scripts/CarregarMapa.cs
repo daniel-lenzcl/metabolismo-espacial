@@ -1,169 +1,446 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UIElements;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using static UnityEditor.ShaderData;
+using UnityEngine;
+using System;
 using Unity.AI.Navigation;
-using UnityEngine.AI;
-using NavMeshSurface = UnityEngine.AI.NavMeshSurface;
+using NavMeshSurface = Unity.AI.Navigation.NavMeshSurface;
+using NavMeshModifier = Unity.AI.Navigation.NavMeshModifier;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class CarregarMapa : MonoBehaviour
 {
     List<Predios> CamadaCasa;
     List<Predios> CamadaTrabalho;
-    public GameObject terrain;
+    List<Predios> CamadaRestaurante;
+    List<mPredios> mCamadaCasa;
+    List<mPredios> mCamadaTrabalho;
+    List<mPredios> mCamadaRestaurante;
 
-    // Start is called before the first frame update
+    List<cPessoa> lista_das_pessoas;
+
+    public Terrain terrain;
+    public levelgenerator levelgenerator_local;
+
+    GameObject mapa;                // raiz do mapa importado (.obj)
+    TratamentoMapaCarregado mapa_propriedades;
+    List<GameObject> gruposPredios = new List<GameObject>();
+    Gerente_de_ambiente Ambiente;
+
+    public NavMeshSurface surface;  // atribuir (ou será criado em runtime)
+
+    private GameObject grupoRuas;
+    private GameObject grupoEscala;
+
+    // ===== Working set de clones (apenas para bake) =====
+    private GameObject navmeshWorkingRoot; // pai de todos os clones usados só no bake
+
+    const int AREA_CAMINHOS = 4;         // área NavMesh para 'rua'
+    static readonly int maskCaminhos = 1 << AREA_CAMINHOS;
+
     void Start()
     {
-        terrain = GameObject.Find("Terrain");
+        lista_das_pessoas = new List<cPessoa>();
+        terrain = FindObjectOfType<Terrain>();
+        levelgenerator_local = FindObjectOfType<levelgenerator>();//<Terrain>()?.GetComponent<levelgenerator>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void IniciarCaptura()
     {
-        
+        StartCoroutine(captura());
     }
 
-    public Bounds Bounds_mapa_importado(GameObject mapa_importado)
+    public IEnumerator captura()
     {
-            Bounds totalBounds = new Bounds();
-            Renderer[] renderers = mapa_importado.GetComponentsInChildren<Renderer>();
+        // carrega referências principais
+        Ambiente = GetComponent<Gerente_de_ambiente>();
+        mapa_propriedades = Ambiente.GetComponent<TratamentoMapaCarregado>();
+        mapa = mapa_propriedades.mapaImportadoRaiz ?? GameObject.Find("MapaImportado");
 
-            if (renderers.Length > 0)
+        // grupos conhecidos
+        if (!mapa_propriedades.GruposCamadas.TryGetValue("rua", out grupoRuas))
+            Debug.LogWarning("CarregarMapa ▸ grupo 'rua' não encontrado");
+        mapa_propriedades.GruposCamadas.TryGetValue("escala", out grupoEscala);
+
+        // todos os grupos que NÃO são rua nem escala → prédios
+        gruposPredios.Clear();
+        gruposPredios = mapa_propriedades.GruposCamadas
+            .Where(kv => kv.Key.ToLower() != "rua" && kv.Key.ToLower() != "escala")
+            .Select(kv => kv.Value)
+            .ToList();
+
+        if (surface == null)
+            surface = mapa.GetComponent<NavMeshSurface>() ?? mapa.AddComponent<NavMeshSurface>();
+
+        // Bake completo usando clones e PhysicsColliders
+        fazer_navmesh();
+        yield return null;
+        // Após o bake, constrói/atribui mPredios para que os agentes encontrem endereços
+        ConstrucoesNoMapa();
+    }
+
+    public void fazer_navmesh()
+    {
+        SepararLotes();
+    }
+
+    private void SepararLotes()
+    {
+        // 0) Desativa originais (para que o bake não use os mesmos GOs)
+        DesabilitarPrediosDuranteGeracaoNavMesh();
+
+        // 0.1) Gera clones temporários apenas para bake (com MeshCollider habilitado)
+        CriarClonesParaNavmesh(); // começam inativos
+
+        // 1) Configura a surface para PhysicsColliders
+        if (surface == null) surface = mapa.GetComponent<NavMeshSurface>() ?? mapa.AddComponent<NavMeshSurface>();
+        surface.collectObjects = CollectObjects.Children;
+        ConfigureSurfaceGeometry(surface);
+        surface.layerMask = ~0; // todas as layers
+
+        // 2) Bake 1/2 – somente ruas
+        if (grupoRuas != null) grupoRuas.SetActive(true);
+        if (grupoEscala != null) grupoEscala.SetActive(false);
+        foreach (var g in gruposPredios) g.SetActive(false);         // originais off
+        if (navmeshWorkingRoot != null) navmeshWorkingRoot.SetActive(false); // clones off
+
+        // --- PhysicsColliders precisam de COLLIDER nas ruas: adiciona temporário ---
+        var tmpRoadCols = new List<Collider>();
+        if (grupoRuas != null) AddTemporaryCollidersForBake(grupoRuas, tmpRoadCols);
+
+        CriarModifier(grupoRuas);    // marca ruas com area 4
+        surface.BuildNavMesh();
+
+        // remove colliders temporários das ruas (prédios virão pelos clones)
+        RemoveTemporaryColliders(tmpRoadCols);
+
+        // 3) Bake 2/2 – ruas + prédios (clones)
+        if (navmeshWorkingRoot != null) navmeshWorkingRoot.SetActive(true);
+
+        foreach (Transform grupoClone in navmeshWorkingRoot.transform)
+        {
+            foreach (Transform predio in grupoClone)
             {
-                // Inicializar os bounds com os primeiros renderers
-                totalBounds = renderers[0].bounds;
-
-                foreach (Renderer renderer in renderers)
+                // opcional: pequena folga lateral para melhor navegação
+                var rend = predio.GetComponent<Renderer>();
+                Vector3 centroAntes = rend ? rend.bounds.center : predio.position;
+                predio.localScale *= 0.9f; // abre "beiral" entre prédio e rua
+                if (rend)
                 {
-                    totalBounds.Encapsulate(renderer.bounds);
+                    Vector3 centroDepois = rend.bounds.center;
+                    predio.position += (centroAntes - centroDepois); // mantém o centro
                 }
-            }
 
-            Debug.Log("Center: " + totalBounds.center);
-            Debug.Log("Size: " + totalBounds.size);
-        return totalBounds;
+                // estica faces até a rua usando a NavMesh de ruas já pronta
+                StretchFacesParaRua(predio.gameObject, 1f, 0f);
+
+                // área de interior para o bake
+                CriarModifier(predio.gameObject);
+            }
+        }
+
+        if (grupoRuas != null) grupoRuas.SetActive(true);
+        surface.collectObjects = CollectObjects.Children;
+        ConfigureSurfaceGeometry(surface);
+        surface.layerMask = ~0;
+        surface.BuildNavMesh();
+
+        // 4) Limpeza – descarta clones e reativa originais
+        DestruirClonesParaNavmesh();
+        ReabilitarPredios();
     }
 
-    public void Locar_Predios(GameObject camada, GameObject predio, List<Predios> lista) 
+    // ===== Construção de mPredios e listas para agentes =====
+    public void ConstrucoesNoMapa()
     {
-//        int filhos_c = casas.transform.childCount;
+        if (Ambiente == null) Ambiente = GetComponent<Gerente_de_ambiente>();
+        if (mapa_propriedades == null) mapa_propriedades = Ambiente.GetComponent<TratamentoMapaCarregado>();
 
+        GameObject casas = null, trabalhos = null, restaurantes = null;
+        mapa_propriedades.GruposCamadas.TryGetValue("casa", out casas);
+        mapa_propriedades.GruposCamadas.TryGetValue("trabalho", out trabalhos);
+        mapa_propriedades.GruposCamadas.TryGetValue("restaurante", out restaurantes);
+
+        if (mCamadaCasa == null) mCamadaCasa = new List<mPredios>(); else mCamadaCasa.Clear();
+        if (mCamadaTrabalho == null) mCamadaTrabalho = new List<mPredios>(); else mCamadaTrabalho.Clear();
+        if (mCamadaRestaurante == null) mCamadaRestaurante = new List<mPredios>(); else mCamadaRestaurante.Clear();
+
+        if (Ambiente != null && Ambiente.mlista_dos_predios != null)
+            Ambiente.mlista_dos_predios.Clear();
+
+        if (casas != null) StartCoroutine(Locar_Predios(casas, mCamadaCasa));
+        if (trabalhos != null) StartCoroutine(Locar_Predios(trabalhos, mCamadaTrabalho));
+        if (restaurantes != null) StartCoroutine(Locar_Predios(restaurantes, mCamadaRestaurante));
+
+        StartCoroutine(_FinalizarConstrucoes());
+    }
+
+    private IEnumerator _FinalizarConstrucoes()
+    {
+        yield return null; // aguarda um frame para as corrotinas terminarem
+        if (Ambiente != null)
+        {
+            if (Ambiente.mlista_dos_predios == null) Ambiente.mlista_dos_predios = new List<mPredios>();
+            Ambiente.mlista_dos_predios.Clear();
+            if (mCamadaCasa != null) Ambiente.mlista_dos_predios.AddRange(mCamadaCasa);
+            if (mCamadaTrabalho != null) Ambiente.mlista_dos_predios.AddRange(mCamadaTrabalho);
+            if (mCamadaRestaurante != null) Ambiente.mlista_dos_predios.AddRange(mCamadaRestaurante);
+            try { Ambiente.PrediosCarregados(); } catch { }
+        }
+    }
+
+    public IEnumerator Locar_Predios(GameObject camada, List<mPredios> mlista)
+    {
+        if (camada == null) yield break;
         for (int i = 0; i < camada.transform.childCount; i++)
         {
-            Vector3 offset_altura =  new Vector3(0, predio.transform.GetComponent<Renderer>().bounds.size.y / 2, 0);
             GameObject child = camada.transform.GetChild(i).gameObject;
-            Vector3 centro_child = child.GetComponent<Renderer>().bounds.center;
-            //            Debug.Log("o q tem em camada casa [" + i + "]: " + CamadaCasa[i].name);
-            Debug.Log("o child  [" + i + "]: " + child.name + "; na posicao: " + centro_child);
-//            Instantiate(predio, centro_child + offset_altura, Quaternion.identity);
-//            Instantiate(geral.GetComponent<levelgenerator>().casa, centro_child + offset_altura, Quaternion.identity);
-            Predios cada_child = new Predios(predio, child.name, centro_child, 3);
-            lista.Add(cada_child);
-            terrain.GetComponent<levelgenerator>().predios.Add(cada_child);
+            var mp = child.GetComponent<mPredios>();
+            if (mp == null) mp = child.AddComponent<mPredios>();
+            if (mlista != null) mlista.Add(mp);
         }
+        yield return null;
     }
 
-    public void captura()
+    // ===== Helpers de preparação =====
+    private void DesabilitarPrediosDuranteGeracaoNavMesh()
     {
-        GameObject geral = GameObject.Find("Terrain");
-        GameObject camada = GameObject.Find("ref_rua");
-        //        Debug.Log("nome camada: " + camada.name);
-        GameObject escala = GameObject.Find("escala");
-        GameObject trabalhos = camada.transform.Find("trabalho").gameObject;
-        GameObject casas = camada.transform.Find("casa").gameObject;
-        //Debug.Log("child em geral: " + geral.transform.childCount +
-        //          "\n child em camada: " + camada.transform.childCount +
-        //          "\n child em escala: " + escala.transform.childCount +
-        //          "\n child em trabalhos: " + trabalhos.transform.childCount +
-        //          "\n child em cs: " + casas.transform.childCount
-        //          );
-
-                
-        terrain.GetComponent<NavMeshSurface>().enabled = false;
-                
-        GameObject ruas = camada.transform.Find("rua").gameObject;
-
-        NavMeshSurface mesh_rua = ruas.AddComponent<NavMeshSurface>();
-        mesh_rua.agentTypeID = 0; // Ajuste o ID conforme o tipo de agente desejado; 0 � geralmente o default humanoide
-        mesh_rua.collectObjects = UnityEngine.AI.CollectObjects.Children; // Coleta meshes dos filhos do GameObject
-
-        mesh_rua.useGeometry = NavMeshCollectGeometry.RenderMeshes;
-
-        // Configure outras propriedades conforme necess�rio
-        // navMeshSurface.layerMask = LayerMask.GetMask("Default"); // Exemplo de configura��o de quais camadas ser�o inclu�das
-
-        // Constroi a NavMesh usando a superf�cie
-        mesh_rua.BuildNavMesh();
-
-
-
-        terrain.GetComponent<levelgenerator>().setaListas("predios");
-        terrain.GetComponent<levelgenerator>().setaListas("enderecos");
-        terrain.GetComponent<levelgenerator>().setaListas("pessoas");
-        terrain.GetComponent<levelgenerator>().iniciaMapa();
-
-
-        CamadaCasa = new List<Predios>();
-        CamadaTrabalho = new List<Predios>();
-
-
-
-        //pegar o obj de referencia de escala e definir fator_de_escala
-        float fator_de_escala = 1;
-        Renderer ref_escala = escala.GetComponentInChildren<Renderer>();
-        if (ref_escala!= null)
+        foreach (var predioGrupo in gruposPredios)
         {
-            Vector3 tamanho_ref = ref_escala.bounds.size;
-            fator_de_escala = 2 / tamanho_ref.x;
-        }
-        //        fator_de_escala *= 10f;
-        camada.transform.localScale = new Vector3(fator_de_escala, fator_de_escala, fator_de_escala);
+            predioGrupo.SetActive(false); // desliga os grupos originais durante o bake
 
-        Bounds limites_mapa_importado = Bounds_mapa_importado(camada);
-        Vector3 centro = terrain.GetComponent<Terrain>().terrainData.bounds.center;
-        camada.transform.position = centro + (limites_mapa_importado.size/2);
-        //Debug.Log("posicao do mapa importado: " + cs.transform.position + 
-        //            "; limites do mapa importado: " + limites_mapa_importado.size + 
-        //            "; centro do mapa importado: " + limites_mapa_importado.center);
-        //Debug.Log("posicao do mapa: " + terrain.transform.position);
-//        terrain.GetComponent<levelgenerator>().maxPessoasI = 3;
-
-        Locar_Predios(casas, geral.gameObject.GetComponent<levelgenerator>().casa, CamadaCasa);
-        Locar_Predios(trabalhos, geral.gameObject.GetComponent<levelgenerator>().trabalho, CamadaTrabalho);
-
-        //Debug.Log("casas adquiridas: " + casas.transform.childCount + 
-        //        "; trabalhos adquiridos: " + trabalhos.transform.childCount);
-        Debug.Log("lista casas adquiridas: " + CamadaCasa.Count + 
-                "; lista trabalhos adquiridos: " + CamadaTrabalho.Count +
-                "; total de predios level generator: " + terrain.GetComponent<levelgenerator>().predios);
-
-        terrain.GetComponent<levelgenerator>().maxPessoasI = 1;
-        terrain.GetComponent<levelgenerator>().todasAsPessoas.Clear();
-
-        terrain.GetComponent<levelgenerator>().totalPessoas = CamadaCasa.Count * terrain.GetComponent<levelgenerator>().maxPessoasI;
-//        for (int i = 0; i < CamadaCasa.Count; i++)
-
-        ///definir as pessoas a partir das casas, ja atribuindo casa e trabalho
-        for (int i = 0; i < terrain.GetComponent<levelgenerator>().totalPessoas; i++)
+            foreach (Transform predio in predioGrupo.transform)
             {
-            //lista de casas e trabalhos tem q ser do tipo Predio
-                terrain.GetComponent<levelgenerator>().todasAsPessoas.Add(new cPessoa(terrain.GetComponent<levelgenerator>().prefabP, "pessoa" + i, CamadaCasa[i], CamadaTrabalho[i]));
+                var col = predio.GetComponent<Collider>();
+                if (col) col.enabled = false;      // desligados para não atrapalhar
+                var mr = predio.GetComponent<MeshRenderer>();
+                if (mr) mr.enabled = true;         // mantém visível na cena
+            }
         }
-        //        this.GetComponent<relacoes>().bAtribuiRelacoes();
-        //        terrain.GetComponent<levelgenerator>().colocaPessoas();
-
-
-
-
-
     }
 
-    public void ReposicionaMapaTerreno()
+    private void ReabilitarPredios()
     {
+        foreach (var predioGrupo in gruposPredios)
+        {
+            predioGrupo.SetActive(true);
 
+            foreach (Transform predio in predioGrupo.transform)
+            {
+                // reabilitar renderer
+                var mr = predio.GetComponent<MeshRenderer>();
+                if (mr) mr.enabled = true;
+
+                // opcional: manter colliders desligados para não bloquear agentes
+                var col = predio.GetComponent<Collider>();
+                if (col) col.enabled = false; // deixe true se quiser colisão física com agentes
+            }
+        }
+    }
+
+    private void CriarClonesParaNavmesh()
+    {
+        DestruirClonesParaNavmesh();
+
+        navmeshWorkingRoot = new GameObject("_WorkingNavmesh");
+        navmeshWorkingRoot.transform.SetParent(mapa.transform, false);
+        navmeshWorkingRoot.SetActive(false); // ativado só no bake 2
+
+        foreach (var grupo in gruposPredios)
+        {
+            if (grupo == null) continue;
+            var cloneGrupo = new GameObject(grupo.name + "_NM");
+            cloneGrupo.transform.SetParent(navmeshWorkingRoot.transform, false);
+            cloneGrupo.transform.position = grupo.transform.position;
+            cloneGrupo.transform.rotation = grupo.transform.rotation;
+            cloneGrupo.transform.localScale = grupo.transform.localScale;
+
+            foreach (Transform child in grupo.transform)
+            {
+                var src = child.gameObject;
+                var go = Instantiate(src, cloneGrupo.transform);
+
+                // mesh própria para deformações locais
+                var mf = go.GetComponent<MeshFilter>();
+                if (mf != null && mf.sharedMesh != null)
+                {
+                    mf.mesh = Instantiate(mf.sharedMesh);
+                }
+
+                // Renderer do clone pode ficar OFF (não precisamos renderizar)
+                var mr = go.GetComponent<MeshRenderer>();
+                if (mr) mr.enabled = false;
+
+                // PhysicsColliders: garantir MeshCollider ativo no clone
+                var mf2 = go.GetComponent<MeshFilter>();
+                if (mf2 != null && mf2.sharedMesh != null)
+                {
+                    var mc = go.GetComponent<MeshCollider>();
+                    if (mc == null) mc = go.AddComponent<MeshCollider>();
+                    mc.sharedMesh = mf2.sharedMesh;
+                    mc.convex = false;
+                    mc.enabled = true;
+                }
+                else
+                {
+                    var anyCol = go.GetComponent<Collider>();
+                    if (anyCol != null) anyCol.enabled = true;
+                }
+
+                // marcar área de interior (3) por padrão
+                CriarModifier(go);
+            }
+        }
+    }
+
+    private void DestruirClonesParaNavmesh()
+    {
+        if (navmeshWorkingRoot != null)
+        {
+            Destroy(navmeshWorkingRoot);
+            navmeshWorkingRoot = null;
+        }
+    }
+
+    /// <summary>
+    /// Procura arestas expostas à rua e estica essas faces para encostar na NavMesh.
+    /// </summary>
+    public static void StretchFacesParaRua(GameObject predio, float maxBusca = 4f, float passo = 0f)
+    {
+        MeshFilter mf = predio.GetComponent<MeshFilter>();
+        if (mf == null || mf.sharedMesh == null) return;
+
+        Mesh mesh = mf.sharedMesh;
+        Vector3[] vLocal = mesh.vertices;
+        int[] tris = mesh.triangles;
+        Transform tf = predio.transform;
+
+        var arestas = new HashSet<(int, int)>();
+        for (int i = 0; i < tris.Length; i += 3)
+        {
+            int a = tris[i];
+            int b = tris[i + 1];
+            int c = tris[i + 2];
+            AddEdge(a, b); AddEdge(b, c); AddEdge(c, a);
+        }
+
+        Dictionary<int, Vector3> deslocPorVert = new Dictionary<int, Vector3>();
+
+        foreach (var (iA, iB) in arestas)
+        {
+            Vector3 A = tf.TransformPoint(vLocal[iA]);
+            Vector3 B = tf.TransformPoint(vLocal[iB]);
+            if (Mathf.Abs(A.y - B.y) > 0.01f) continue; // evita telhado
+
+            Vector3 center = (A + B) * 0.5f;
+            Vector3 dirAB = (B - A).normalized;
+            Vector3 normal2D = new Vector3(-dirAB.z, 0, dirAB.x).normalized;
+
+            bool achou = false;
+            UnityEngine.AI.NavMeshHit hit;
+            if (UnityEngine.AI.NavMesh.SamplePosition(center + normal2D * maxBusca, out hit, maxBusca + 0.5f, maskCaminhos))
+                achou = true;
+            else if (UnityEngine.AI.NavMesh.SamplePosition(center - normal2D * maxBusca, out hit, maxBusca + 0.5f, maskCaminhos))
+            { normal2D *= -1; achou = true; }
+            if (!achou) continue;
+
+            Vector3 pontoRua = hit.position; pontoRua.y = center.y;
+            Vector3 desloc = pontoRua - center + normal2D * passo; desloc.y = 0;
+            Acumula(iA, desloc); Acumula(iB, desloc);
+        }
+
+        if (deslocPorVert.Count == 0) return;
+        Vector3[] vNovoLocal = (Vector3[])vLocal.Clone();
+        foreach (var kv in deslocPorVert)
+        {
+            int idx = kv.Key; Vector3 d = kv.Value;
+            vNovoLocal[idx] = tf.InverseTransformPoint(tf.TransformPoint(vLocal[idx]) + d);
+        }
+        mesh.vertices = vNovoLocal;
+        mesh.RecalculateBounds();
+        mesh.RecalculateNormals();
+
+        void AddEdge(int x, int y)
+        { if (x < y) arestas.Add((x, y)); else arestas.Add((y, x)); }
+        void Acumula(int i, Vector3 d)
+        { if (deslocPorVert.ContainsKey(i)) deslocPorVert[i] += d; else deslocPorVert[i] = d; }
+    }
+
+    /// <summary>
+    /// Cria/reaproveita um NavMeshModifier e define a área: rua→4, demais→3.
+    /// </summary>
+    public void CriarModifier(GameObject go)
+    {
+        if (go == null) return;
+        string nome = go.name.ToLower();
+        if (nome.Contains("escala")) return;
+        var mod = go.GetComponent<NavMeshModifier>();
+        if (mod == null) mod = go.AddComponent<NavMeshModifier>();
+        mod.overrideArea = true;
+        if (nome.Contains("rua") || nome.Contains("caminho")) mod.area = 4; else mod.area = 3;
+    }
+    private void ConfigureSurfaceGeometry(NavMeshSurface s)
+    {
+        try
+        {
+            var enumType = Type.GetType("Unity.AI.Navigation.CollectGeometry, Unity.AI.Navigation");
+            if (enumType == null)
+            {
+                enumType = Type.GetType("UnityEngine.AI.NavMeshCollectGeometry, UnityEngine.AIModule");
+            }
+            if (enumType != null)
+            {
+                var physicsVal = Enum.Parse(enumType, "PhysicsColliders");
+                var prop = typeof(NavMeshSurface).GetProperty("useGeometry");
+                if (prop != null)
+                {
+                    prop.SetValue(s, physicsVal, null);
+                }
+            }
+        }
+        catch { }
+    }
+    private void RemoveTemporaryColliders(List<Collider> cols)
+    {
+        if (cols == null) return;
+        foreach (var c in cols)
+        {
+            if (c == null) continue;
+#if UNITY_EDITOR
+            if (Application.isPlaying) Destroy(c);
+            else DestroyImmediate(c);
+#else
+            Destroy(c);
+#endif
+        }
+        cols.Clear();
+    }
+
+    private void AddTemporaryCollidersForBake(GameObject root, List<Collider> added)
+    {
+        if (root == null) return;
+        foreach (var t in root.GetComponentsInChildren<Transform>(true))
+        {
+            var mf = t.GetComponent<MeshFilter>();
+            if (mf != null && mf.sharedMesh != null)
+            {
+                var col = t.GetComponent<Collider>();
+                if (col == null)
+                {
+                    var mc = t.gameObject.AddComponent<MeshCollider>();
+                    mc.sharedMesh = mf.sharedMesh;
+                    mc.convex = false;
+                    mc.enabled = true;
+                    if (added != null) added.Add(mc);
+                }
+                else
+                {
+                    // se já existe, garanta que esteja ativo durante o bake
+                    col.enabled = true;
+                }
+            }
+        }
     }
 }

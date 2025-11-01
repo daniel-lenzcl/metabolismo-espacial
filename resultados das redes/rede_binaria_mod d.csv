@@ -1,0 +1,11 @@
+;pessoa_0;pessoa_1;pessoa_2;pessoa_3;pessoa_4;pessoa_5;pessoa_6;pessoa_7;pessoa_8;pessoa_9
+pessoa_0;1;0;0;0;0;0;0;0;0;0
+pessoa_1;0;1;0;0;0;0;0;0;0;0
+pessoa_2;0;0;1;0;0;0;0;0;0;0
+pessoa_3;0;0;0;1;0;0;0;0;0;0
+pessoa_4;0;0;0;0;1;0;0;0;0;0
+pessoa_5;0;0;0;0;0;1;0;0;0;0
+pessoa_6;0;0;0;0;0;0;1;0;0;0
+pessoa_7;0;0;0;0;0;0;0;1;0;0
+pessoa_8;1;0;0;0;0;0;0;0;1;0
+pessoa_9;0;0;0;0;0;0;0;0;0;1

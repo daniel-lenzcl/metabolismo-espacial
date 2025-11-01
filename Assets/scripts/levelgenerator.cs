@@ -10,10 +10,13 @@ public class levelgenerator : MonoBehaviour
     //    public GameObject pessoa;
     //    public GameObject enemy;
     public GameObject cam;
-    public GameObject prefabP;
+    public GameObject prefabP; //prefab das pessoas
     public GameObject casa;
     public GameObject escola;
     public GameObject trabalho;
+    public GameObject predio_com_porta;
+
+
     public GameObject terrain;
     public List<Predios> predios;
     public List<Vector3> enderecos;
@@ -42,65 +45,27 @@ public class levelgenerator : MonoBehaviour
 
     public Lugar lugar;
     public cPessoa[] familias;
+    //    public List<cPessoa> familias;
     public int contador;
     public int contador2;
-    //    public List<cPessoa> familias;
 
-    /*  -------------------------------------------tentando tratar o dropdown com enum de origem                /
-    enum distribuicoes { a,b,c};                                                                                /
-    public Dropdown dropdown;                                                                                   /
-                                                                                                                /
-    void preencheDd()                                                                                           /
-    {                                                                                                           /
-        //        List<string>listaDist = Enum.GetValues(typeof(distribuicoes)).Cast<SomeEnum>().ToList();      /
-        string [] lista = distribuicoes.GetNames(typeof(distribuicoes));                                        /
-        List<string> listaDist = new List<string>(lista);                                                       /
-                                                                                                                /
-        dropdown.AddOptions(listaDist);                                                                         /
-    }-------------------------------------------tentando tratar o dropdown com enum de origem
-    */
 
-    // Start is called before the first frame update
     void Start()
     {
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //       List<string> teste = new List<string> { "casa1", "casa2", "escola", "casa3", "escola1", "escola2" };
-        //      int testeindex = teste.IndexOf("casa2");
-        //        Debug.Log("LEVEL-START: index de casa2: " + testeindex);
-        //        List<string> testecasa = new List<string>();
-        /*    foreach (string t in teste)
-            {
-                if (t.Contains("e")) { testecasa.Add(t); }
-            }
-        */
-
-        //        testecasa.AddRange( teste.FindAll((x) => x.Contains("es")));                   // tentando fazer sublist de list. .ADDRANGE resolveu a questao
-        //        string temp = "";
-        //        foreach (string z in testecasa)
-        //        {
-        //            temp += " " + z;
-        //        }
-        //      Debug.Log("lista de casas: " + temp);
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//                totalCasas = 5;
-        //        totalEscolas = 5;
-  //              totalTrabalhos = 5;
-        //        maxPessoasI = 5;
-    //            totalPessoas = 10;
+/*
         Debug.Log("levelgenerator - START: total pessoas: " + totalPessoas +
                   "\n                total casas: " + totalCasas +
                   "\n                total trabalhos: " + totalTrabalhos);
-
-
+*/
         /*        int tpop = GetComponent<populacao>().populacaoTotal;
                 int criancas = tpop * GetComponent<populacao>().p100crianca/100;
                 int adultos = tpop - criancas;
                 Debug.Log("populacao total: " + tpop + " criancas: " + criancas);
         */
+
         usedPoints = new List<Vector3>();
-        cam.GetComponent<ajusteCamera>().reposicionar();
+//        cam.GetComponent<ajusteCamera>().reposicionar(); //substituida por CONTROLECAMERA
         //        iniciaMapa();
         //        lugar = new List<Lugar>();
     }
@@ -165,14 +130,6 @@ public class levelgenerator : MonoBehaviour
         {
             Destroy(g);
         }
-
-        ///////////////////////////////////////////////////////////////////////////// testes para uso da classe lugar. a versao generateObjects(lugar.tipo) eh a mais interessante
-        /*if (lugar.tipoLugar == escola) {
-            GenerateObjects(escola, totalEscolas);
-            Debug.Log("tipo escola");
-        }*/
-
-        //        GenerateObjects(lugar.tipoLugar, totalEscolas);
 
         /////////////////////////////////////////////////////////////////////////////
         ///PROVAVELMENTE, MELHOR REGISTRAR TODOS OS LUGARES AQUI. PERMITIRIA UM COUNT TOTAL DE LUGARES, BEM COMO DE CADA TIPO.
@@ -328,18 +285,21 @@ public class levelgenerator : MonoBehaviour
                 }
                 break;
             case "importar mapa":
-                GameObject canvas = GameObject.Find("Canvas");
-                canvas.GetComponent<CarregarMapa>().captura();
-                
+                GameObject ambiente = GameObject.Find("ambiente");
+                ambiente.GetComponent<CarregarMapa>().IniciarCaptura();
+
+
+
 
                 break;
 
         }
-        foreach (Predios p in predios)
-        {
-            Instantiate(p.predioPreFab, p.enderecoXYZ, Quaternion.identity);
+        ///teste eqt ajusta a identificacao das portas
+//        foreach (Predios p in predios)
+//        {
+//            Instantiate(p.predioPreFab, p.enderecoXYZ, Quaternion.identity);
 //            Debug.Log("LEVEL-COLOCA PREDIOS: nome predio: "+ p.nomePredio + "endereco " + p.enderecoXYZ);
-        }
+//        }
 
         cam.GetComponent<ajusteCamera>().reposicionar();
         //        Debug.Log("centro bounds: " + posCam);
