@@ -66,23 +66,29 @@ public class gestor_populacao : MonoBehaviour
         }
     }
 
-    public void SalvarRedeAtual()
+    public void SalvarRedeAtual(string nome_arquivo)
     {
         DebugController.Log(DebugCategoria.GestorPopulacao, "SalvarRedeAtual ▸ ");
 
         string caminho = @"C:\Users\danie\OneDrive\posdoc - ufc\atividades\metabolismo espacial\resultados das redes";
         var matriz = salvador.GerarMatrizSimplesDeCenas();
-        //        GetComponent<SalvarRedes>().SalvarRedeSimples(matriz, caminho);
 
-//        salvador.SalvarRedeSimples(matriz, caminho);
-//        salvador.SalvarMatrizBinaria(matriz, caminho);
+#if UNITY_EDITOR
+//    GetComponent<SalvarRedes>().SalvarRedeSimples(matriz, caminho);
+//    salvador.SalvarRedeSimples(matriz, caminho);
+//    salvador.SalvarMatrizBinaria(matriz, caminho);
+    Debug.Log("SalvarRedeAtual -> arquivo salvo em: " + caminho);
+#endif
+
         var matriz_download = salvador.GerarStringMatrizBinaria(matriz);
-        Debug.Log("SalvarRedeAtual -> filename: 'rede_simples.csv'");
+        Debug.Log("SalvarRedeAtual -> filename: " + nome_arquivo + ".csv");
         Debug.Log("SalvarRedeAtual -> csv length:" + matriz_download.Length);
 
         Debug.Log($"SalvarRedeAtual -> preview: " + matriz_download);
 
-        download_rede("rede_simples.csv", matriz_download);
+#if UNITY_WEBGL
+    download_rede(nome_arquivo+".csv", matriz_download);
+#endif
 
     }
 }

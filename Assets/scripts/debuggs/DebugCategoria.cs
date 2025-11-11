@@ -31,7 +31,7 @@ public static class DebugController
 //        DebugCategoria.Rotina,
 //        DebugCategoria.CarregarMapa,
 //        DebugCategoria.GerenteAmbiente,
-//        DebugCategoria.Botoes,
+        DebugCategoria.Botoes,
 //        DebugCategoria.Populacao,
 //        DebugCategoria.BuildOptimizer
     };

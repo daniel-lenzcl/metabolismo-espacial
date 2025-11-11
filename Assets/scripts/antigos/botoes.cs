@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class botoes : MonoBehaviour
 {
@@ -11,13 +12,80 @@ public class botoes : MonoBehaviour
     public SalvarRedes salvador;  // atribuir via Inspector ou buscar via script
 
     private horas horas_computando;
+
+    private gestor_populacao Gestor_populacao_local;
+    private bool salvaRede = false;
+    private Text textoBotaoSalvarRede;
+    private TMP_InputField inputNomeRede;
+    private Button BotaoSalvarRede;
+    private gerente_paineis gerente_paineis_local;
     // ------------------------ Unity Methods ------------------------ 
     void Start()
     {
         DebugController.Log(DebugCategoria.Botoes, "botoes ▸ Start chamado");
+
+        // inicio configurando botao de redes
+        Gestor_populacao_local = FindObjectOfType<gestor_populacao>();
+
+        GameObject go0 = GameObject.Find("bListaRedeNovo");
+        if (go0 != null)
+        {
+            BotaoSalvarRede = go0.GetComponent<Button>();
+            Debug.Log("BotaoSalvarRede encontrado: " + BotaoSalvarRede.name);
+            //            if (BotaoSalvarRede != null)
+            //            {
+            //                BotaoSalvarRede.onClick.RemoveAllListeners();
+            //                BotaoSalvarRede.onClick.AddListener(botaoListaRede);
+            //            }
+
+            textoBotaoSalvarRede = BotaoSalvarRede.GetComponentInChildren<Text>();
+            if (textoBotaoSalvarRede != null)
+            {
+                textoBotaoSalvarRede.text = "listar rede";
+                Debug.Log("textoBotaoSalvarRede encontrado: " + textoBotaoSalvarRede.text);
+
+            }
+
+            Transform go1 = BotaoSalvarRede.transform.Find("InputField_nome_rede");
+            if (go1 != null)
+            {
+                Debug.Log("go1 encontrado: " + go1.name);
+            }
+
+            inputNomeRede = go1.GetComponentInChildren<TMP_InputField>();   //BotaoSalvarRede.transform.Find("InputField_nome_rede");
+            if (inputNomeRede != null)
+            {
+                Debug.Log("inputNomeRede encontrado: " + inputNomeRede.name);
+            }
+
+            gerente_paineis_local = BotaoSalvarRede.GetComponent<gerente_paineis>();
+            if (gerente_paineis_local != null)
+            {
+                Debug.Log("gerente_paineis_local encontrado: " + gerente_paineis_local.botoes);
+            }
+        }
+
+        /*
+        GameObject go1 = GameObject.Find("TextListaRede");
+        if (go1 != null)
+        {
+            textoBotaoSalvarRede = go1.GetComponent<Text>();
+            if (textoBotaoSalvarRede != null)
+                textoBotaoSalvarRede.text = "listar rede";
+
+        }
+
+        GameObject go2 = GameObject.Find("InputField_nome_rede");
+        if (go2 != null)
+        {
+            inputNomeRede = go2.GetComponent<TMP_InputField>();
+        }
+        */
+
+        // fim configurando botao de redes
     }
 
-    void Update() { }
+        void Update() { }
 
     // ------------------------ UI Callbacks ------------------------ 
     public void botaDia()
@@ -71,24 +139,42 @@ public class botoes : MonoBehaviour
 
     public void botaoListaRede()
     {
-        DebugController.Log(DebugCategoria.Botoes, $"botaoListaRede ▸ salvando rede");
-        /*
-        GameObject[] individuos = GameObject.FindGameObjectsWithTag("pessoas");
-        DebugController.Log(DebugCategoria.Botoes, $"botaoListaRede ▸ total pessoas = {individuos.Length}");
-
-        if (individuos == null || individuos.Length == 0)
+        if (salvaRede)
         {
-            DebugController.Log(DebugCategoria.Botoes, "botaoListaRede ▸ nenhuma pessoa encontrada");
+            DebugController.Log(DebugCategoria.Botoes, $"botaoListaRede ▸ salvando rede");
+            /*
+            GameObject[] individuos = GameObject.FindGameObjectsWithTag("pessoas");
+            DebugController.Log(DebugCategoria.Botoes, $"botaoListaRede ▸ total pessoas = {individuos.Length}");
+
+            if (individuos == null || individuos.Length == 0)
+            {
+                DebugController.Log(DebugCategoria.Botoes, "botaoListaRede ▸ nenhuma pessoa encontrada");
+                return;
+            }
+
+            GameObject.Find("Terrain").GetComponent<populacao>().matrizEncontros();
+            GameObject.Find("Terrain").GetComponent<populacao>().salvaMatriz();
+            */
+
+            string nomeRede = inputNomeRede.text;
+            Debug.Log("nome da rede a salvar: " + nomeRede);
+            Gestor_populacao_local.SalvarRedeAtual(nomeRede);
+            salvaRede = false;
+            textoBotaoSalvarRede.text = "listar rede";
+            gerente_paineis_local.habilitaPainel();
             return;
         }
-
-        GameObject.Find("Terrain").GetComponent<populacao>().matrizEncontros();
-        GameObject.Find("Terrain").GetComponent<populacao>().salvaMatriz();
-        */
-
-        gestor_populacao gestor = FindObjectOfType<gestor_populacao>();
-        gestor.SalvarRedeAtual();
+        if (!salvaRede)
+        {
+            DebugController.Log(DebugCategoria.Botoes, $"botaoNomeRede ▸ pedindo nome da rede");
+            //            salvador.PedeNomeRede();
+            salvaRede = true;
+            textoBotaoSalvarRede.text = "Salvar";
+            gerente_paineis_local.habilitaPainel();
+            return;
+        }
     }
+
 }
 
     /*
