@@ -31,7 +31,7 @@ public class botoes : MonoBehaviour
         if (go0 != null)
         {
             BotaoSalvarRede = go0.GetComponent<Button>();
-            Debug.Log("BotaoSalvarRede encontrado: " + BotaoSalvarRede.name);
+            DebugController.Log(DebugCategoria.Botoes, $"BotaoSalvarRede encontrado: {BotaoSalvarRede.name}");
             //            if (BotaoSalvarRede != null)
             //            {
             //                BotaoSalvarRede.onClick.RemoveAllListeners();
@@ -42,26 +42,26 @@ public class botoes : MonoBehaviour
             if (textoBotaoSalvarRede != null)
             {
                 textoBotaoSalvarRede.text = "listar rede";
-                Debug.Log("textoBotaoSalvarRede encontrado: " + textoBotaoSalvarRede.text);
+                DebugController.Log(DebugCategoria.Botoes, $"textoBotaoSalvarRede encontrado: {textoBotaoSalvarRede.text}");
 
             }
 
             Transform go1 = BotaoSalvarRede.transform.Find("InputField_nome_rede");
             if (go1 != null)
             {
-                Debug.Log("go1 encontrado: " + go1.name);
+                DebugController.Log(DebugCategoria.Botoes, $"go1 encontrado: {go1.name}");
             }
 
             inputNomeRede = go1.GetComponentInChildren<TMP_InputField>();   //BotaoSalvarRede.transform.Find("InputField_nome_rede");
             if (inputNomeRede != null)
             {
-                Debug.Log("inputNomeRede encontrado: " + inputNomeRede.name);
+                DebugController.Log(DebugCategoria.Botoes, $"inputNomeRede encontrado: {inputNomeRede.name}");
             }
 
             gerente_paineis_local = BotaoSalvarRede.GetComponent<gerente_paineis>();
             if (gerente_paineis_local != null)
             {
-                Debug.Log("gerente_paineis_local encontrado: " + gerente_paineis_local.botoes);
+                DebugController.Log(DebugCategoria.Botoes, $"gerente_paineis_local encontrado: {gerente_paineis_local.botoes}");
             }
         }
 

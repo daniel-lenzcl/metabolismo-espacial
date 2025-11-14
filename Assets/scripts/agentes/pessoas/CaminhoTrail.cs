@@ -23,7 +23,7 @@ public class CaminhoTrail : MonoBehaviour
 
     void Awake()
     {
-        relogio = GameObject.Find("Terrain").GetComponent<horas>();
+        relogio = FindObjectOfType<horas>();// GameObject.Find("Terrain").GetComponent<horas>();
 
         // Cria um filho para o LineRenderer
         GameObject linhaGO = new GameObject("TrailRendererObj");
@@ -37,7 +37,7 @@ public class CaminhoTrail : MonoBehaviour
         lr.numCapVertices = 4;                   // cantos arredondados
         lr.alignment = LineAlignment.View;       // sempre de frente pra câmera
         lr.textureMode = LineTextureMode.Tile;   // repetição de textura
-        lr.startColor = lr.endColor = new Color(1f, 1f, 0f, 0.2f);   // vermelho claro
+        lr.startColor = lr.endColor = new Color(0f, 1f, 1f, 0.2f); //azul claro //new Color(1f, 1f, 0f, 0.2f);   // vermelho claro
 
         // Definindo as chaves de cor (color keys)
         GradientColorKey[] colorKeys = new GradientColorKey[1];  // Apenas uma cor (vermelha)

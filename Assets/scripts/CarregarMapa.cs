@@ -12,12 +12,9 @@ using UnityEditor;
 
 public class CarregarMapa : MonoBehaviour
 {
-    List<Predios> CamadaCasa;
-    List<Predios> CamadaTrabalho;
-    List<Predios> CamadaRestaurante;
-    List<mPredios> mCamadaCasa;
-    List<mPredios> mCamadaTrabalho;
-    List<mPredios> mCamadaRestaurante;
+    // removidas listas estáticas por tipo (casa/trabalho/restaurante)
+    // agora usamos um dicionário dinâmico por nome de camada
+    Dictionary<string, List<mPredios>> mCamadas = new Dictionary<string, List<mPredios>>();
 
     List<cPessoa> lista_das_pessoas;
 
@@ -64,7 +61,7 @@ public class CarregarMapa : MonoBehaviour
             Debug.LogWarning("CarregarMapa ▸ grupo 'rua' não encontrado");
         mapa_propriedades.GruposCamadas.TryGetValue("escala", out grupoEscala);
 
-        // todos os grupos que NÃO são rua nem escala → prédios
+        // todos os grupos que NÃO são rua nem escala → prédios (mantém a lista para bake)
         gruposPredios.Clear();
         gruposPredios = mapa_propriedades.GruposCamadas
             .Where(kv => kv.Key.ToLower() != "rua" && kv.Key.ToLower() != "escala")
@@ -158,35 +155,52 @@ public class CarregarMapa : MonoBehaviour
         if (Ambiente == null) Ambiente = GetComponent<Gerente_de_ambiente>();
         if (mapa_propriedades == null) mapa_propriedades = Ambiente.GetComponent<TratamentoMapaCarregado>();
 
-        GameObject casas = null, trabalhos = null, restaurantes = null;
-        mapa_propriedades.GruposCamadas.TryGetValue("casa", out casas);
-        mapa_propriedades.GruposCamadas.TryGetValue("trabalho", out trabalhos);
-        mapa_propriedades.GruposCamadas.TryGetValue("restaurante", out restaurantes);
+        // Limpa dicionário anterior
+        mCamadas.Clear();
 
-        if (mCamadaCasa == null) mCamadaCasa = new List<mPredios>(); else mCamadaCasa.Clear();
-        if (mCamadaTrabalho == null) mCamadaTrabalho = new List<mPredios>(); else mCamadaTrabalho.Clear();
-        if (mCamadaRestaurante == null) mCamadaRestaurante = new List<mPredios>(); else mCamadaRestaurante.Clear();
+        // itera dinamicamente todas as camadas agrupadas (exceto 'rua' e 'escala')
+        foreach (var kv in mapa_propriedades.GruposCamadas)
+        {
+            string nomeCamada = kv.Key;
+            if (nomeCamada == null) continue;
+            string nomeBaixo = nomeCamada.ToLower();
+            if (nomeBaixo == "rua" || nomeBaixo == "escala") continue;
 
-        if (Ambiente != null && Ambiente.mlista_dos_predios != null)
-            Ambiente.mlista_dos_predios.Clear();
+            GameObject grupo = kv.Value;
+            if (grupo == null) continue;
 
-        if (casas != null) StartCoroutine(Locar_Predios(casas, mCamadaCasa));
-        if (trabalhos != null) StartCoroutine(Locar_Predios(trabalhos, mCamadaTrabalho));
-        if (restaurantes != null) StartCoroutine(Locar_Predios(restaurantes, mCamadaRestaurante));
+            // cria lista para esta camada
+            var listaMp = new List<mPredios>();
+            mCamadas[nomeCamada] = listaMp;
 
+            // inicia coroutine que vai popular a lista com componentes mPredios
+            StartCoroutine(Locar_Predios(grupo, listaMp));
+        }
+
+        // quando todas as corrotinas estiverem em andamento, finalize
         StartCoroutine(_FinalizarConstrucoes());
     }
 
     private IEnumerator _FinalizarConstrucoes()
     {
-        yield return null; // aguarda um frame para as corrotinas terminarem
+        // aguarda um frame para as corrotinas terminarem (padrão do design atual)
+        yield return null;
         if (Ambiente != null)
         {
             if (Ambiente.mlista_dos_predios == null) Ambiente.mlista_dos_predios = new List<mPredios>();
             Ambiente.mlista_dos_predios.Clear();
-            if (mCamadaCasa != null) Ambiente.mlista_dos_predios.AddRange(mCamadaCasa);
-            if (mCamadaTrabalho != null) Ambiente.mlista_dos_predios.AddRange(mCamadaTrabalho);
-            if (mCamadaRestaurante != null) Ambiente.mlista_dos_predios.AddRange(mCamadaRestaurante);
+
+            // agrega todas as listas dinâmicas
+            foreach (var kv in mCamadas)
+            {
+                var lista = kv.Value;
+                if (lista != null && lista.Count > 0)
+                    Ambiente.mlista_dos_predios.AddRange(lista);
+            }
+
+            // expõe as camadas/dicionário dinâmico para o Gerente_de_ambiente
+            Ambiente.mCamadas = mCamadas;
+
             try { Ambiente.PrediosCarregados(); } catch { }
         }
     }

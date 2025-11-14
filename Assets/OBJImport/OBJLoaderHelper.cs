@@ -96,14 +96,14 @@ namespace Dummiesman
                 sh = Shader.Find(name);
                 if (sh != null)
                 {
-                    Debug.Log($"OBJLoaderHelper: usando shader '{name}' para material fallback.");
+                    DebugController.Log(DebugCategoria.WebGLFileUploader, $"OBJLoaderHelper: usando shader '{name}' para material fallback.");
                     break;
                 }
             }
 
             if (sh == null)
             {
-                Debug.LogWarning("OBJLoaderHelper: nenhum shader candidato encontrado. Verifique __Edit > Project Settings > Graphics__ > __Always Included Shaders__.");
+                DebugController.LogWarning(DebugCategoria.WebGLFileUploader, "OBJLoaderHelper: nenhum shader candidato encontrado. Verifique __Edit > Project Settings > Graphics__ > __Always Included Shaders__.");
                 // tenta opções mais simples
                 sh = Shader.Find("Standard") ?? Shader.Find("Unlit/Texture") ?? Shader.Find("Sprites/Default");
             }
@@ -121,14 +121,14 @@ namespace Dummiesman
             if (finalShader != null)
             {
                 var mat = new Material(finalShader) { name = "obj_fallback_material_final" };
-                Debug.LogWarning("OBJLoaderHelper: fallback final aplicado.");
+                DebugController.LogWarning(DebugCategoria.WebGLFileUploader, "OBJLoaderHelper: fallback final aplicado.");
                 return mat;
             }
 
             // Se chegar aqui, algo muito errado no build — cria um material com cor base (não ideal, mas evita exception)
             var fallback = new Material(Shader.Find("Sprites/Default") ?? Shader.Find("Unlit/Texture"));
             fallback.name = "obj_fallback_material_defensive";
-            Debug.LogWarning("OBJLoaderHelper: nenhum shader disponível, criado material defensivo.");
+            DebugController.LogWarning(DebugCategoria.WebGLFileUploader, "OBJLoaderHelper: nenhum shader disponível, criado material defensivo.");
             return fallback;
         }
 

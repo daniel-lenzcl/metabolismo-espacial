@@ -6,7 +6,8 @@ public enum DebugCategoria { tracking, TratamentoMapaCarregado, GestorPopulacao,
                              ControleCamera, Horas, 
                              mPredios, cPessoa, Rotina, conectados, ParaConectar, CaminhoTrail,
                              Simulacao, CarregarMapa , GerenteAmbiente, Botoes, Populacao, SalvarRedes,
-                             GerenteEncontros, BuildOptimizer
+                             GerenteEncontros, BuildOptimizer, WebGLFileUploader,
+    OBJLoaderHelper, DetectorTamanhoArquivo
 }
 
 public static class DebugController
@@ -15,25 +16,30 @@ public static class DebugController
     public static HashSet<DebugCategoria> categoriasAtivas = new HashSet<DebugCategoria>
     {
         // ✅ mostre logs de prédios; altere em runtime se quiser
-//        DebugCategoria.mPredios,
-//        DebugCategoria.conectados,  //esse vai sair, substituido por ParaConectar
-//        DebugCategoria.ParaConectar,
-//        DebugCategoria.CaminhoTrail,
-//        DebugCategoria.GerenteEncontros,
-//        DebugCategoria.SalvarRedes,
-//        DebugCategoria.tracking,
-//        DebugCategoria.TratamentoMapaCarregado,
-//        DebugCategoria.GestorPopulacao,
-//        DebugCategoria.Mapas,
-//        DebugCategoria.ControleCamera,
-//        DebugCategoria.Horas,
-//        DebugCategoria.cPessoa,
-//        DebugCategoria.Rotina,
-//        DebugCategoria.CarregarMapa,
-//        DebugCategoria.GerenteAmbiente,
-        DebugCategoria.Botoes,
-//        DebugCategoria.Populacao,
-//        DebugCategoria.BuildOptimizer
+        //        DebugCategoria.mPredios,
+        //        DebugCategoria.conectados,  //esse vai sair, substituido por ParaConectar
+        //        DebugCategoria.ParaConectar,
+        //        DebugCategoria.CaminhoTrail,
+        //        DebugCategoria.GerenteEncontros,
+        //        DebugCategoria.SalvarRedes,
+        //        DebugCategoria.tracking,
+        //        DebugCategoria.TratamentoMapaCarregado,
+        //        DebugCategoria.GestorPopulacao,
+        //        DebugCategoria.Mapas,
+        //        DebugCategoria.ControleCamera,
+        //        DebugCategoria.Horas,
+        //        DebugCategoria.cPessoa,
+        //        DebugCategoria.Rotina,
+        //        DebugCategoria.CarregarMapa,
+        //        DebugCategoria.GerenteAmbiente,
+        //        DebugCategoria.Botoes,
+        //        DebugCategoria.Populacao,
+        //        DebugCategoria.BuildOptimizer,
+        //        DebugCategoria.WebGLFileUploader
+        //        debugCategoria.OBJLoaderHelper,
+//        DebugCategoria.DetectorTamanhoArquivo
+
+        //  ✅ adicione outras categorias conforme necessário    
     };
 
     public static void Log(DebugCategoria cat, string msg)

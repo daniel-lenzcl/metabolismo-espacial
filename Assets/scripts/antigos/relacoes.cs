@@ -171,7 +171,16 @@ public class relacoes : MonoBehaviour
 //            Debug.Log("RELACOES-B ATRIBUI RELACOES: nome das casas: " + indexCasa + "contapessoas casa: " + contapessoasCasa +
 //                "\n                 nome dos trab: " + indexTrab + " conta pessoas trab: " + contapessoasTrab);
 //            Debug.Log("RELACOES-B ATRIBUI RELACOES: nome das casas: " + asCasas[indexCasa].nomePredio + "endereco casa: " + asCasas[indexCasa].enderecoXYZ);
-            levelgenerator_local_relacoes.todasAsPessoas.Add(new cPessoa(levelgenerator_local_relacoes.prefabP, "pessoa" + i, asCasas[indexCasa], osTrabalhos[indexTrab]));
+
+            // CORREÇÃO: cPessoa não possui mais construtor com 4 args.
+            // Criar instância com (prefab, nome) e atribuir campos depois.
+            var novaPessoa = new cPessoa(levelgenerator_local_relacoes.prefabP, "pessoa" + i);
+            novaPessoa.minhaCasa = asCasas[indexCasa];
+            novaPessoa.meuTrabalho = osTrabalhos[indexTrab];
+            // opcional: inicializar agora (assinar eventos, etc.)
+            novaPessoa.Inicializar();
+
+            levelgenerator_local_relacoes.todasAsPessoas.Add(novaPessoa);
 //            index++;
         }
         Debug.Log("RELACOES-B ATRIBUI RELACOES: contagem todasaspessoas: " + levelgenerator_local_relacoes.todasAsPessoas.Count + "total de predios: "+ levelgenerator_local_relacoes.predios.Count);

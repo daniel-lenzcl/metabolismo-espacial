@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using UnityEngine;
 using System.Runtime.InteropServices;
 using System.IO;
@@ -55,7 +54,7 @@ public class WebGLFileUploader : MonoBehaviour
 #else
     private void logMessage(string message)
     {
-        Debug.Log(message);
+        DebugController.Log(DebugCategoria.WebGLFileUploader, message);
     }
 #endif
 
@@ -122,14 +121,14 @@ public class WebGLFileUploader : MonoBehaviour
 
         if (tratamentoMapa == null)
         {
-            Debug.LogError("TratamentoMapaCarregado não encontrado no objeto 'ambiente'!");
+            DebugController.LogError(DebugCategoria.WebGLFileUploader, "TratamentoMapaCarregado não encontrado no objeto 'ambiente'!");
             return;
         }
 
         // Garantir que o shader fallback esteja inicializado aqui, já que Start() pode ter rodado antes do upload
         EnsureFallbackShader();
 
-        if (debug) Debug.Log("Recebendo arquivo OBJ para processamento otimizado...");
+        if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, "Recebendo arquivo OBJ para processamento otimizado...");
 
         if (processarComCoroutines)
         {
@@ -152,11 +151,11 @@ public class WebGLFileUploader : MonoBehaviour
 
         if (shaderFallback != null)
         {
-            if (debug) Debug.Log($"Fallback shader definido dinamicamente: {shaderFallback.name}");
+            if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, $"Fallback shader definido dinamicamente: {shaderFallback.name}");
         }
         else
         {
-            Debug.LogWarning("Fallback shader não encontrado. Adicione o shader em __Edit > Project Settings > Graphics__ > __Always Included Shaders__ ou atribua shaderFallback no Inspector.");
+            DebugController.LogWarning(DebugCategoria.WebGLFileUploader, "Fallback shader não encontrado. Adicione o shader em __Edit > Project Settings > Graphics__ > __Always Included Shaders__ ou atribua shaderFallback no Inspector.");
         }
     }
 
@@ -170,7 +169,7 @@ public class WebGLFileUploader : MonoBehaviour
         // Extrair o tipo MIME do cabeçalho
         string tipoMIME = cabecalho.Split(':')[1].Split(';')[0];
 
-        Debug.Log($"Tipo MIME: {tipoMIME}");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"Tipo MIME: {tipoMIME}");
 
         // Converter o conteúdo de base64 para bytes
         byte[] arquivoBytes = Convert.FromBase64String(conteudoBase64);
@@ -178,7 +177,7 @@ public class WebGLFileUploader : MonoBehaviour
         // Obter o tamanho do arquivo
         int tamanhoArquivo = arquivoBytes.Length;
 
-        Debug.Log($"Tamanho do arquivo: {tamanhoArquivo} bytes");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"Tamanho do arquivo: {tamanhoArquivo} bytes");
 
         // Aqui você pode processar o arquivo...
     }
@@ -187,14 +186,14 @@ public class WebGLFileUploader : MonoBehaviour
     {
         var tempoInicio = System.DateTime.Now;
 
-        if (debug) Debug.Log("=== INICIANDO CARREGAMENTO OTIMIZADO COM COROUTINES ===");
+        if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, "=== INICIANDO CARREGAMENTO OTIMIZADO COM COROUTINES ===");
 
         tratamentoMapa.LimparMapaAnterior();
         yield return new WaitForSeconds(0.1f);
 
         if (otimizarMemoriaAutomaticamente)
         {
-            if (debug) Debug.Log("Otimizando memória antes do carregamento...");
+            if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, "Otimizando memória antes do carregamento...");
             LiberarMemoria();
             yield return null;
         }
@@ -218,7 +217,7 @@ public class WebGLFileUploader : MonoBehaviour
 
         if (dados.Length > 5 * 1024 * 1024)
         {
-            if (debug) Debug.Log("Arquivo grande detectado - otimização extra de memória...");
+            if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, "Arquivo grande detectado - otimização extra de memória...");
             LiberarMemoriaAgressiva();
             yield return new WaitForSeconds(0.3f);
         }
@@ -256,7 +255,7 @@ public class WebGLFileUploader : MonoBehaviour
             tratamentoMapa.InicializarMapaCamadas(conteudoOBJ);
 
             var tempoTotal = System.DateTime.Now - tempoInicio;
-            if (debug) Debug.Log($"🎉 CARREGAMENTO CONCLUÍDO EM {tempoTotal.TotalSeconds:F2} SEGUNDOS 🎉");
+            if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, $"🎉 CARREGAMENTO CONCLUÍDO EM {tempoTotal.TotalSeconds:F2} SEGUNDOS 🎉");
         }
 
         dados = null;
@@ -284,21 +283,21 @@ public class WebGLFileUploader : MonoBehaviour
     {
         try
         {
-            if (debug) Debug.Log("Decodificando arquivo base64...");
+            if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, "Decodificando arquivo base64...");
 
             string base64Data = arquivoBase64.Substring(arquivoBase64.IndexOf(",") + 1);
             byte[] dados = System.Convert.FromBase64String(base64Data);
             string conteudoOBJ = System.Text.Encoding.UTF8.GetString(dados);
 
             float tamanhoMB = dados.Length / 1024f / 1024f;
-            if (debug) Debug.Log($"Arquivo decodificado: {dados.Length:N0} bytes ({tamanhoMB:F1} MB)");
+            if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, $"Arquivo decodificado: {dados.Length:N0} bytes ({tamanhoMB:F1} MB)");
 
             if (analisarAntesCarregar && detector != null)
             {
                 bool podeCarregar = detector.ValidarAntesCarregar(dados, this);
                 if (!podeCarregar)
                 {
-                    Debug.LogError("❌ Carregamento cancelado após análise");
+                    DebugController.LogError(DebugCategoria.WebGLFileUploader, "❌ Carregamento cancelado após análise");
                     return new ResultadoDecodificacao { sucesso = false };
                 }
             }
@@ -312,7 +311,7 @@ public class WebGLFileUploader : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Erro ao decodificar arquivo: {e.Message}");
+            DebugController.LogError(DebugCategoria.WebGLFileUploader, $"Erro ao decodificar arquivo: {e.Message}");
             return new ResultadoDecodificacao { sucesso = false };
         }
     }
@@ -321,7 +320,7 @@ public class WebGLFileUploader : MonoBehaviour
     {
         try
         {
-            if (debug) Debug.Log($"Carregando OBJ com SplitMode: {splitMode}...");
+            if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, $"Carregando OBJ com SplitMode: {splitMode}...");
 
             using (MemoryStream stream = new MemoryStream(dados))
             {
@@ -332,24 +331,24 @@ public class WebGLFileUploader : MonoBehaviour
 
                 if (mapa != null)
                 {
-                    if (debug) Debug.Log($"✅ OBJ carregado com sucesso: {mapa.name}");
+                    if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, $"✅ OBJ carregado com sucesso: {mapa.name}");
                     return new ResultadoCarregamento { sucesso = true, mapa = mapa };
                 }
                 else
                 {
-                    Debug.LogError("OBJLoader retornou null - falha ao importar o modelo.");
+                    DebugController.LogError(DebugCategoria.WebGLFileUploader, "OBJLoader retornou null - falha ao importar o modelo.");
                     return new ResultadoCarregamento { sucesso = false };
                 }
             }
         }
         catch (System.OutOfMemoryException)
         {
-            Debug.LogError("⚠️ OutOfMemoryException! Tentando carregamento conservador...");
+            DebugController.LogError(DebugCategoria.WebGLFileUploader, "⚠️ OutOfMemoryException! Tentando carregamento conservador...");
             return new ResultadoCarregamento { sucesso = false };
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Erro ao carregar OBJ: {e.ToString()}");
+            DebugController.LogError(DebugCategoria.WebGLFileUploader, $"Erro ao carregar OBJ: {e.ToString()}");
             return new ResultadoCarregamento { sucesso = false };
         }
     }
@@ -358,7 +357,7 @@ public class WebGLFileUploader : MonoBehaviour
     {
         try
         {
-            if (debug) Debug.Log("Tentativa conservadora com SplitMode.None...");
+            if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, "Tentativa conservadora com SplitMode.None...");
 
             using (MemoryStream stream = new MemoryStream(dados))
             {
@@ -368,23 +367,23 @@ public class WebGLFileUploader : MonoBehaviour
 
                 if (mapa != null)
                 {
-                    if (debug) Debug.Log("✅ Carregamento conservador bem-sucedido!");
+                    if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, "✅ Carregamento conservador bem-sucedido!");
                     return new ResultadoCarregamento { sucesso = true, mapa = mapa };
                 }
                 else
                 {
-                    Debug.LogError("Carregamento conservador também falhou.");
+                    DebugController.LogError(DebugCategoria.WebGLFileUploader, "Carregamento conservador também falhou.");
                     return new ResultadoCarregamento { sucesso = false };
                 }
             }
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"❌ Falha mesmo com configurações conservadoras: {e.Message}");
-            Debug.LogError("Arquivo muito grande para a memória disponível. Considere:");
-            Debug.LogError("1. Usar um arquivo menor");
-            Debug.LogError("2. Dividir o modelo em partes");
-            Debug.LogError("3. Otimizar o modelo no Blender");
+            DebugController.LogError(DebugCategoria.WebGLFileUploader, $"❌ Falha mesmo com configurações conservadoras: {e.Message}");
+            DebugController.LogError(DebugCategoria.WebGLFileUploader, "Arquivo muito grande para a memória disponível. Considere:");
+            DebugController.LogError(DebugCategoria.WebGLFileUploader, "1. Usar um arquivo menor");
+            DebugController.LogError(DebugCategoria.WebGLFileUploader, "2. Dividir o modelo em partes");
+            DebugController.LogError(DebugCategoria.WebGLFileUploader, "3. Otimizar o modelo no Blender");
             return new ResultadoCarregamento { sucesso = false };
         }
     }
@@ -399,7 +398,7 @@ public class WebGLFileUploader : MonoBehaviour
                 totalVertices += mesh.sharedMesh.vertexCount;
         }
 
-        Debug.Log($"📊 Mapa carregado: {mapa.transform.childCount} objetos filhos, " +
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"📊 Mapa carregado: {mapa.transform.childCount} objetos filhos, " +
                  $"{meshes.Length} meshes, {totalVertices:N0} vértices totais");
     }
 
@@ -407,7 +406,7 @@ public class WebGLFileUploader : MonoBehaviour
     {
         var tempoInicio = System.DateTime.Now;
 
-        if (debug) Debug.Log("=== PROCESSAMENTO IMEDIATO (pode causar travamento momentâneo) ===");
+        if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, "=== PROCESSAMENTO IMEDIATO (pode causar travamento momentâneo) ===");
 
         tratamentoMapa.LimparMapaAnterior();
 
@@ -428,7 +427,7 @@ public class WebGLFileUploader : MonoBehaviour
         var resultadoCarregamento = CarregarOBJ(dados);
         if (!resultadoCarregamento.sucesso)
         {
-            Debug.LogError("❌ Falha no carregamento imediato");
+            DebugController.LogError(DebugCategoria.WebGLFileUploader, "❌ Falha no carregamento imediato");
             return;
         }
 
@@ -449,7 +448,7 @@ public class WebGLFileUploader : MonoBehaviour
             tratamentoMapa.InicializarMapaCamadas(conteudoOBJ);
 
             var tempoTotal = System.DateTime.Now - tempoInicio;
-            if (debug) Debug.Log($"🎉 Processamento concluído em {tempoTotal.TotalSeconds:F2}s");
+            if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, $"🎉 Processamento concluído em {tempoTotal.TotalSeconds:F2}s");
         }
 
         if (otimizarMemoriaAutomaticamente)
@@ -462,7 +461,7 @@ public class WebGLFileUploader : MonoBehaviour
     {
         float tamanhoMB = tamanhoArquivo / 1024f / 1024f;
 
-        if (debug) Debug.Log($"🔧 Auto-configurando para arquivo de {tamanhoMB:F1} MB...");
+        if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, $"🔧 Auto-configurando para arquivo de {tamanhoMB:F1} MB...");
 
         if (tamanhoMB > 10f)
         {
@@ -471,7 +470,7 @@ public class WebGLFileUploader : MonoBehaviour
             tratamentoMapa.usarCoroutineParaOrganizacao = true;
             tratamentoMapa.objetosPorFrame = 5;
 
-            if (debug) Debug.Log("🛡️ Configuração CONSERVADORA aplicada (arquivo >10MB)");
+            if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, "🛡️ Configuração CONSERVADORA aplicada (arquivo >10MB)");
         }
         else if (tamanhoMB > 2f)
         {
@@ -480,11 +479,11 @@ public class WebGLFileUploader : MonoBehaviour
             tratamentoMapa.usarCoroutineParaOrganizacao = true;
             tratamentoMapa.objetosPorFrame = 10;
 
-            if (debug) Debug.Log("⚙️ Configuração PADRÃO aplicada (arquivo 2-10MB)");
+            if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, "⚙️ Configuração PADRÃO aplicada (arquivo 2-10MB)");
         }
         else
         {
-            if (debug) Debug.Log("⚡ Configuração atual mantida (arquivo pequeno <2MB)");
+            if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, "⚡ Configuração atual mantida (arquivo pequeno <2MB)");
         }
 
         otimizarMemoriaAutomaticamente = true;
@@ -501,13 +500,13 @@ public class WebGLFileUploader : MonoBehaviour
         if (debug && mostrarProgressoCarregamento)
         {
             long memoria = System.GC.GetTotalMemory(false);
-            Debug.Log($"🧠 Memória após limpeza: {memoria / 1024 / 1024} MB");
+            DebugController.Log(DebugCategoria.WebGLFileUploader, $"🧠 Memória após limpeza: {memoria / 1024 / 1024} MB");
         }
     }
 
     private void LiberarMemoriaAgressiva()
     {
-        if (debug) Debug.Log("🧹 Executando limpeza agressiva de memória...");
+        if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, "🧹 Executando limpeza agressiva de memória...");
 
         for (int i = 0; i < 3; i++)
         {
@@ -521,7 +520,7 @@ public class WebGLFileUploader : MonoBehaviour
         if (debug)
         {
             long memoria = System.GC.GetTotalMemory(false);
-            Debug.Log($"🧠 Memória após limpeza agressiva: {memoria / 1024 / 1024} MB");
+            DebugController.Log(DebugCategoria.WebGLFileUploader, $"🧠 Memória após limpeza agressiva: {memoria / 1024 / 1024} MB");
         }
     }
 
@@ -560,7 +559,7 @@ public class WebGLFileUploader : MonoBehaviour
             }
         }
 
-        if (debug) Debug.Log($"Corrigidos shaders em {corrigidos} renderers.");
+        if (debug) DebugController.Log(DebugCategoria.WebGLFileUploader, $"Corrigidos shaders em {corrigidos} renderers.");
     }
 
     [ContextMenu("🔧 Configurar para 4MB")]
@@ -576,34 +575,34 @@ public class WebGLFileUploader : MonoBehaviour
             tratamentoMapa.ConfigurarPara4MB();
         }
 
-        Debug.Log("✅ Configurado para arquivo de 4MB!");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, "✅ Configurado para arquivo de 4MB!");
     }
 
     [ContextMenu("🧠 Mostrar Status Memória")]
     public void MostrarStatusMemoria()
     {
         long memoriaAntes = System.GC.GetTotalMemory(false);
-        Debug.Log($"=== STATUS DE MEMÓRIA ===");
-        Debug.Log($"💾 Memória atual: {memoriaAntes / 1024 / 1024} MB");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"=== STATUS DE MEMÓRIA ===");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"💾 Memória atual: {memoriaAntes / 1024 / 1024} MB");
 
         LiberarMemoria();
 
         long memoriaDepois = System.GC.GetTotalMemory(false);
-        Debug.Log($"💾 Memória após limpeza: {memoriaDepois / 1024 / 1024} MB");
-        Debug.Log($"♻️ Memória liberada: {(memoriaAntes - memoriaDepois) / 1024 / 1024} MB");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"💾 Memória após limpeza: {memoriaDepois / 1024 / 1024} MB");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"♻️ Memória liberada: {(memoriaAntes - memoriaDepois) / 1024 / 1024} MB");
 
-        Debug.Log($"⚙️ Configuração atual:");
-        Debug.Log($"   - Coroutines: {processarComCoroutines}");
-        Debug.Log($"   - Split Mode: {splitMode}");
-        Debug.Log($"   - Otimização Automática: {otimizarMemoriaAutomaticamente}");
-        Debug.Log($"   - Configuração Automática: {configuracaoAutomatica}");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"⚙️ Configuração atual:");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"   - Coroutines: {processarComCoroutines}");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"   - Split Mode: {splitMode}");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"   - Otimização Automática: {otimizarMemoriaAutomaticamente}");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"   - Configuração Automática: {configuracaoAutomatica}");
     }
 
     [ContextMenu("🧹 Limpar Memória Agora")]
     public void LiberarMemoriaManual()
     {
         LiberarMemoria();
-        Debug.Log("🧹 Memória limpa manualmente!");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, "🧹 Memória limpa manualmente!");
     }
 
     [System.Runtime.InteropServices.DllImport("__Internal")]

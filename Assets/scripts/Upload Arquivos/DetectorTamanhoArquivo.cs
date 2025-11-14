@@ -164,19 +164,19 @@ public class DetectorTamanhoArquivo : MonoBehaviour
 
     public void MostrarAnalise(AnaliseArquivo analise)
     {
-        Debug.Log("=== ANÁLISE DE ARQUIVO OBJ ===");
-        Debug.Log($"📁 Tamanho do arquivo: {analise.tamanhoMB:F1} MB ({analise.tamanhoBytes:N0} bytes)");
-        Debug.Log($"🧠 RAM estimada: {analise.complexidadeEstimada:F1} MB");
-        Debug.Log($"📊 Vértices: {analise.numeroVertices:N0}");
-        Debug.Log($"📊 Faces: {analise.numeroFaces:N0}");
-        Debug.Log($"📦 Objetos: {analise.numeroObjetos}");
-        Debug.Log($"🔄 Objetos duplicados: {(analise.objetosDuplicados ? "SIM" : "NÃO")}");
-        Debug.Log($"⚡ Complexidade: {analise.nivel}");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, "=== ANÁLISE DE ARQUIVO OBJ ===");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"📁 Tamanho do arquivo: {analise.tamanhoMB:F1} MB ({analise.tamanhoBytes:N0} bytes)");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"🧠 RAM estimada: {analise.complexidadeEstimada:F1} MB");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"📊 Vértices: {analise.numeroVertices:N0}");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"📊 Faces: {analise.numeroFaces:N0}");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"📦 Objetos: {analise.numeroObjetos}");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"🔄 Objetos duplicados: {(analise.objetosDuplicados ? "SIM" : "NÃO")}");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, $"⚡ Complexidade: {analise.nivel}");
 
-        Debug.Log("\n💡 SUGESTÕES:");
+        DebugController.Log(DebugCategoria.WebGLFileUploader, "\n💡 SUGESTÕES:");
         foreach (string sugestao in analise.sugestoes)
         {
-            Debug.Log($"   {sugestao}");
+            DebugController.Log(DebugCategoria.WebGLFileUploader, $"   {sugestao}");
         }
     }
 
@@ -202,7 +202,7 @@ public class DetectorTamanhoArquivo : MonoBehaviour
             case NivelComplexidade.MuitoGrande:
                 uploader.processarComCoroutines = true;
                 uploader.splitMode = Dummiesman.SplitMode.None;
-                Debug.LogWarning("⚠️ Arquivo muito grande - carregamento pode falhar");
+                DebugController.LogWarning(DebugCategoria.WebGLFileUploader, "⚠️ Arquivo muito grande - carregamento pode falhar");
                 break;
         }
 
@@ -225,12 +225,12 @@ public class DetectorTamanhoArquivo : MonoBehaviour
 
         if (analise.nivel == NivelComplexidade.MuitoGrande)
         {
-            Debug.LogWarning("⚠️ AVISO: Arquivo muito grande!");
-            Debug.LogWarning("💡 Recomendação: Use o pipeline do Unity (arraste para Inspector)");
+            DebugController.LogWarning(DebugCategoria.WebGLFileUploader, "⚠️ AVISO: Arquivo muito grande!");
+            DebugController.LogWarning(DebugCategoria.WebGLFileUploader, "💡 Recomendação: Use o pipeline do Unity (arraste para Inspector)");
 
             if (!usarModoConservadorSeGrande)
             {
-                Debug.LogError("❌ Carregamento cancelado - arquivo muito grande");
+                DebugController.LogError(DebugCategoria.WebGLFileUploader, "❌ Carregamento cancelado - arquivo muito grande");
                 return false;
             }
         }

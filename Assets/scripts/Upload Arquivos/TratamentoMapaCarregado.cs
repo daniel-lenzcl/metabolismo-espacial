@@ -86,6 +86,14 @@ public class TratamentoMapaCarregado : MonoBehaviour
     }
 
     /// <summary>NOVO: Agrupa objetos por nome base (ca, ca_0, ca_1 → camada "ca")</summary>
+    /// 
+    //
+    ///  Explicação das Mudanças
+    ///      Cálculo do Volume da Mesh Individual:
+    ///          Calculamos o volume de cada mesh individualmente, mantendo um registro da maior mesh encontrada durante o loop.
+    ///      Ajuste da Layer da Maior Mesh:
+    ///           Se nenhuma camada de rua for encontrada, ajustamos apenas a layer da maior mesh individual, não o grupo inteiro.      
+
     private IEnumerator AgruparPorNomeBaseCoroutine()
     {
         GruposCamadas = new Dictionary<string, GameObject>();
@@ -99,6 +107,13 @@ public class TratamentoMapaCarregado : MonoBehaviour
         int contador = 0; int objetosProcessados = 0;
         DebugController.Log(DebugCategoria.TratamentoMapaCarregado, $"AGRUPAMENTO: Organizando {filhos.Count} objetos por nome base...");
 
+        // Lista de nomes de camadas que podem ser consideradas como ruas
+        string[] nomesDeRua = { "rua", "caminho", "passeio", "estrada", "calçada" };
+
+        // Variáveis para identificar a maior mesh
+        GameObject maiorMeshGameObject = null;
+        float maiorVolume = 0f;
+
         foreach (Transform filho in filhos)
         {
             string nomeOriginal = filho.name;
@@ -110,14 +125,40 @@ public class TratamentoMapaCarregado : MonoBehaviour
             {
                 GameObject grupo = new GameObject(nomeBase);
                 grupo.transform.SetParent(mapaImportadoRaiz.transform);
-                grupo.layer = (nomeBase.ToLower().Contains("rua") || nomeBase.ToLower().Contains("terreno")) ? LayerMask.NameToLayer("caminhos") : LayerMask.NameToLayer("predios");
                 grupo.AddComponent<CamadaInfo>().nomeCamada = nomeBase;
+
+                // Verifica se o nome da camada corresponde a um dos nomes de rua
+                string layerName = "predios"; // Valor padrão
+                foreach (var nomeRua in nomesDeRua)
+                {
+                    if (nomeBase.ToLower().Contains(nomeRua))
+                    {
+                        layerName = "caminhos";
+                        break;
+                    }
+                }
+
+                grupo.layer = LayerMask.NameToLayer(layerName);
+
                 grupos[nomeBase] = grupo; GruposCamadas[nomeBase] = grupo; contadorPorCamada[nomeBase] = 0;
             }
 
             filho.SetParent(grupos[nomeBase].transform);
             filho.gameObject.layer = grupos[nomeBase].layer;
             filho.name = $"{nomeBase}_{contadorPorCamada[nomeBase]}"; contadorPorCamada[nomeBase]++;
+
+            // Calcula o volume da mesh para identificar a maior mesh
+            MeshFilter meshFilter = filho.GetComponent<MeshFilter>();
+            if (meshFilter != null && meshFilter.sharedMesh != null)
+            {
+                Bounds bounds = meshFilter.sharedMesh.bounds;
+                float volume = bounds.size.x * bounds.size.y * bounds.size.z;
+                if (volume > maiorVolume)
+                {
+                    maiorVolume = volume;
+                    maiorMeshGameObject = filho.gameObject;
+                }
+            }
 
             contador++; objetosProcessados++;
             if (usarCoroutineParaOrganizacao && contador >= objetosPorFrame)
@@ -134,8 +175,28 @@ public class TratamentoMapaCarregado : MonoBehaviour
             { System.GC.Collect(); if (usarCoroutineParaOrganizacao) yield return null; }
         }
 
+        // Verifica se nenhuma camada de rua foi encontrada
+        bool encontrouRua = GruposCamadas.Values.Any(g => g.layer == LayerMask.NameToLayer("caminhos"));
+        if (!encontrouRua && maiorMeshGameObject != null)
+        {
+            string maiorMeshNome = maiorMeshGameObject.name;
+            string maiorMeshNomeBase = maiorMeshNome;
+            if (maiorMeshNome.Contains("_") && char.IsDigit(maiorMeshNome.Split('_').Last()[0]))
+                maiorMeshNomeBase = maiorMeshNome.Substring(0, maiorMeshNome.LastIndexOf('_'));
+
+            DebugController.LogWarning(DebugCategoria.TratamentoMapaCarregado, $"Nenhuma camada de rua encontrada. Sugerindo a maior mesh '{maiorMeshNomeBase}' como camada de rua.");
+
+            if (GruposCamadas.TryGetValue(maiorMeshNomeBase, out GameObject grupoMaiorMesh))
+            {
+                // Ajusta apenas a maior mesh individual, não o grupo inteiro
+                maiorMeshGameObject.layer = LayerMask.NameToLayer("caminhos");
+            }
+        }
+
         DebugController.Log(DebugCategoria.TratamentoMapaCarregado, $"AGRUPAMENTO CONCLUÍDO: {grupos.Count} camadas criadas: {string.Join(", ", grupos.Keys)}");
     }
+
+
 
     /// <summary>
     /// Garante normais voltadas para +Y em faces ~horizontais; corrige triângulos invertidos.

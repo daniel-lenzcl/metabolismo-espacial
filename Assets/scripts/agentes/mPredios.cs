@@ -98,7 +98,8 @@ public class mPredios : MonoBehaviour
         if (string.IsNullOrEmpty(nomePredio))
         {
             int idxSibling = meshOrigem.transform.GetSiblingIndex();
-            string nomeLimpo = System.Text.RegularExpressions.Regex.Replace(meshOrigem.name.ToLower(), @"\\d", "");
+            // Corrigido: expressão regular para remover dígitos corretamente
+            string nomeLimpo = System.Text.RegularExpressions.Regex.Replace(meshOrigem.name.ToLower(), @"\d", "");
             nomePredio = nomeLimpo + "_" + idxSibling;
         }
 
@@ -242,7 +243,8 @@ public class mPredios : MonoBehaviour
         }
 
         // ---- laterais: contorno com orientação (baseia o winding no tri da base) ----
-        float tol = Mathf.Max(1e-6f, contornoTolXZ);
+        // Proteção: evita tol extremamente pequeno que produz int gigantes ao arredondar
+        float tol = Mathf.Max(1e-3f, contornoTolXZ);
         // mapeia índice original -> representante por posição (XZ)
         Dictionary<string, int> pos2rep = new Dictionary<string, int>();
         int[] repOf = new int[numVerticesOriginais];

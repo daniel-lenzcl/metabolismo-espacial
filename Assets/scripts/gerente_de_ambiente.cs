@@ -11,8 +11,13 @@ public class Gerente_de_ambiente : MonoBehaviour
 
     public List<molde_pessoas> lista_tipos_pessoas = new List<molde_pessoas>();
     public painel_tipo_pessoa atualizacao_de_pessoas;
+
     public List<Predios> lista_dos_predios = new List<Predios>();
     public List<mPredios> mlista_dos_predios = new List<mPredios>();
+
+    // Expondo mCamadas: nomeDaCamada -> lista de mPredios
+    public Dictionary<string, List<mPredios>> mCamadas = new Dictionary<string, List<mPredios>>();
+
     public int Total_Pessoas = 0;
     public List<cPessoa> todas_as_pessoas;
     public List<CamadaInfo> todas_as_camadas;
