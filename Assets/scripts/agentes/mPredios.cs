@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿//csharp C:\Users\danie\OneDrive\posdoc - ufc\atividades\metabolismo espacial\Assets\scripts\agentes\mPredios.cs
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -40,6 +41,9 @@ public class mPredios : MonoBehaviour
     // Se false (default), NENHUM collider será criado e nada bloqueará a navegação.
 
     public bool TemVaga() => populacao < capacidadeGente;
+
+    // Mapa estático para garantir mesma cor para a mesma categoria (prefixo do nomePredio)
+    private static Dictionary<string, Color> categoryColorMap = new Dictionary<string, Color>();
 
     #region Inicializações
     public void inicializar(GameObject tipo, string nome, Vector3 end, int totalGente)
@@ -103,11 +107,17 @@ public class mPredios : MonoBehaviour
             nomePredio = nomeLimpo + "_" + idxSibling;
         }
 
-        // tipo e cor
-        string tipopredio = nomePredio.ToLower();
-        if (tipopredio.Contains("casa")) { capacidadeGente = Random.Range(1, 10); modificador_tipo = 10; cor = Color.yellow; }
-        else if (tipopredio.Contains("trabalho")) { capacidadeGente = Random.Range(3, 25); modificador_tipo = 5; cor = Color.red; }
-        else if (tipopredio.Contains("restaurante")) { capacidadeGente = Random.Range(10, 50); modificador_tipo = 3; cor = Color.green; }
+        // Extrai a "categoria" a partir do nomePredio (prefixo antes do número/underscore)
+        string categoria = ExtractCategoryFromName(nomePredio);
+
+        // tipo (mantém lógica de capacidade/modificador) baseada na categoria
+        string tipopredio = categoria.ToLower();
+        if (tipopredio.Contains("casa")) { capacidadeGente = Random.Range(1, 10); modificador_tipo = 10; }
+        else if (tipopredio.Contains("trabalho")) { capacidadeGente = Random.Range(3, 25); modificador_tipo = 5; }
+        else if (tipopredio.Contains("restaurante")) { capacidadeGente = Random.Range(10, 50); modificador_tipo = 3; }
+
+        // atribui cor aleatória consistente por categoria (prefixo do nomePredio)
+        cor = GetColorForCategory(categoria);
 
         // endereço base DA MALHA ORIGINAL (antes da extrusão)
         var rMeshStart0 = meshOrigem.GetComponent<Renderer>();
@@ -502,5 +512,50 @@ public class mPredios : MonoBehaviour
             enderecoXYZ = hit.position;
         else if (rMesh != null)
             enderecoXYZ = rMesh.bounds.center;
+    }
+
+    // Extrai a categoria (prefixo) de um nomePredio esperado como "categoria_numero" ou similar.
+    private static string ExtractCategoryFromName(string name)
+    {
+        if (string.IsNullOrEmpty(name)) return "default";
+        var parts = name.ToLower().Split(new char[] { '_', ' ' }, System.StringSplitOptions.RemoveEmptyEntries);
+        return parts.Length > 0 ? parts[0] : name.ToLower();
+    }
+
+    // Gera/retorna uma cor determinística por categoria (prefixo do nomePredio).
+    // Usa a razão áurea para espaçar matizes e uma seed derivada do nome para variação determinística.
+    private static Color GetColorForCategory(string category)
+    {
+        if (string.IsNullOrEmpty(category)) category = "default";
+        if (categoryColorMap.TryGetValue(category, out Color c)) return c;
+
+        // hash determinístico simples (djb2)
+        int seed = Djb2Hash(category);
+        seed = (seed == int.MinValue) ? int.MaxValue : Mathf.Abs(seed);
+
+        System.Random rng = new System.Random(seed);
+
+        // razão áurea para distribuir matizes
+        const float golden = 0.6180339887498949f;
+        float baseHue = Mathf.Repeat((seed % 1000) * golden, 1f);
+
+        float hueJitter = ((float)rng.NextDouble() - 0.5f) * 0.12f;
+        float hue = Mathf.Repeat(baseHue + hueJitter, 1f);
+        float sat = 0.6f + (float)rng.NextDouble() * 0.35f; // 0.6 - 0.95
+        float val = 0.7f + (float)rng.NextDouble() * 0.25f;  // 0.7 - 0.95
+
+        c = Color.HSVToRGB(hue, Mathf.Clamp01(sat), Mathf.Clamp01(val));
+        categoryColorMap[category] = c;
+        return c;
+    }
+
+    private static int Djb2Hash(string s)
+    {
+        unchecked
+        {
+            int hash = 5381;
+            foreach (char ch in s) hash = ((hash << 5) + hash) + ch; // hash * 33 + ch
+            return hash;
+        }
     }
 }
