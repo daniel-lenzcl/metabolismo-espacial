@@ -293,6 +293,7 @@ public class cPessoa
         {
             molde_pessoas chosenModel = null;
 
+            ///testando
             // se tipoPessoa (prefab) estiver setado, tente casar pelo nome
             if (tipoPessoa != null)
             {
