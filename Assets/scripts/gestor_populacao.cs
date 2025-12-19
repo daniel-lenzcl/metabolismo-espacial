@@ -9,6 +9,8 @@ public class gestor_populacao : MonoBehaviour
 {
     public InputField entrada_pessoas;
     public Gerente_de_ambiente Ambiente;
+    public GerenteEncontros gerenteEncontros;
+
     public GameObject pfGente;
     private GameObject as_pessoas;
 
@@ -21,6 +23,8 @@ public class gestor_populacao : MonoBehaviour
     void Start()
     {
         Ambiente = GetComponent<Gerente_de_ambiente>();
+        gerenteEncontros = FindObjectOfType<GerenteEncontros>();
+
         DebugController.Log(DebugCategoria.GestorPopulacao, "Start ▸ referência ao Gerente_de_ambiente capturada");
 
         if (salvador == null)
@@ -34,6 +38,7 @@ public class gestor_populacao : MonoBehaviour
     public void popular()
     {
         ResetPopulacao();
+        gerenteEncontros.DeletarMarcadores();
         as_pessoas = new GameObject("as_pessoas");
 
         int total = int.Parse(entrada_pessoas.text);
@@ -62,6 +67,8 @@ public class gestor_populacao : MonoBehaviour
         {
             Destroy(as_pessoas);
             as_pessoas = null;
+            gerenteEncontros.DeletarMarcadores();
+
             DebugController.Log(DebugCategoria.GestorPopulacao, "ResetPopulacao ▸ população destruída");
         }
     }
@@ -74,9 +81,9 @@ public class gestor_populacao : MonoBehaviour
         var matriz = salvador.GerarMatrizSimplesDeCenas();
 
 #if UNITY_EDITOR
-//    GetComponent<SalvarRedes>().SalvarRedeSimples(matriz, caminho);
-//    salvador.SalvarRedeSimples(matriz, caminho);
-//    salvador.SalvarMatrizBinaria(matriz, caminho);
+    GetComponent<SalvarRedes>().SalvarRedeSimples(matriz, caminho);
+    salvador.SalvarRedeSimples(matriz, caminho);
+    salvador.SalvarMatrizBinaria(matriz, caminho);
     Debug.Log("SalvarRedeAtual -> arquivo salvo em: " + caminho);
 #endif
 
@@ -86,8 +93,18 @@ public class gestor_populacao : MonoBehaviour
 
         Debug.Log($"SalvarRedeAtual -> preview: " + matriz_download);
 
-#if UNITY_WEBGL
-    download_rede(nome_arquivo+".csv", matriz_download);
+        // Apenas invoque o método nativo em build WebGL real (não no Editor)
+#if UNITY_WEBGL && !UNITY_EDITOR
+    try
+    {
+        download_rede(nome_arquivo + ".csv", matriz_download);
+    }
+    catch (System.EntryPointNotFoundException ex)
+    {
+        DebugController.LogWarning(DebugCategoria.GestorPopulacao, $"SalvarRedeAtual ▸ download_rede não encontrado no runtime: {ex.Message}");
+    }
+#else
+        DebugController.LogWarning(DebugCategoria.GestorPopulacao, "SalvarRedeAtual ▸ download_rede disponível somente em build WebGL. Ignorando no Editor/Plataforma atual.");
 #endif
 
     }

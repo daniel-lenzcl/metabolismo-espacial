@@ -201,7 +201,9 @@ public class cPessoa
             objPessoa.transform.position = posFinal;
         }
 
-        Debug.Log($"Instanciado o agente {identidade} na posição válida da NavMesh: {posFinal}");
+//        Debug.Log($"Instanciado o agente {identidade} na posição válida da NavMesh: {posFinal}");
+        DebugController.Log(DebugCategoria.cPessoa, $"cPessoa/InstanciaPessoa ▸ tracking: Instanciado o agente {identidade} na posição válida da NavMesh: {posFinal} ");
+
 
         // cria componente Rotina e associa pessoa (Rotina fará a execução quando o relógio avançar)
         Rotina rotina = objPessoa.AddComponent<Rotina>();
@@ -495,7 +497,7 @@ public class cPessoa
                 kv.Value.RemoverMorador();
         }
 
-        Debug.Log("fui destruido: " + identidade);
+//        Debug.Log("fui destruido: " + identidade);
         DebugController.LogWarning(DebugCategoria.cPessoa, $"despedida ▸ fui destruido:'{ identidade}'");
     }
 }

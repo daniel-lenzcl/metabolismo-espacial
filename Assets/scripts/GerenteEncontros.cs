@@ -17,6 +17,11 @@ public class GerenteEncontros : MonoBehaviour
     public GameObject cilindroPrefab;   // O prefab do cilindro a ser instanciado
     public float alturaCilindro = 1f;   // Altura do cilindro
     public float raioCilindro = 0.2f;   // Raio do cilindro
+
+    // Nome do GameObject pai que agrupa todos os marcadores
+    public string todosEncontrosName = "todosencontros";
+    private Transform todosEncontrosParent;
+
     void Start()
     {
         DebugController.Log(DebugCategoria.GerenteEncontros, "Start ▸");
@@ -28,6 +33,19 @@ public class GerenteEncontros : MonoBehaviour
         marcadoresAtivos = new List<GameObject>();  // Inicializa a lista de marcadores
         marcadoresMatrices = new List<Matrix4x4>();  // Inicializa a lista de matrizes
 
+        // cria ou encontra o parent "todosencontros" e parenteará os marcadores para organização
+        var exist = GameObject.Find(todosEncontrosName);
+        if (exist == null)
+        {
+            var ambienteGO = GameObject.Find("ambiente");
+            GameObject holder = new GameObject(todosEncontrosName);
+            if (ambienteGO != null) holder.transform.SetParent(ambienteGO.transform, false);
+            todosEncontrosParent = holder.transform;
+        }
+        else
+        {
+            todosEncontrosParent = exist.transform;
+        }
 
         // Exemplo de como configurar a malha e o material para DrawMeshInstanced
         Graphics.DrawMeshInstanced(marcadorMesh, 0, marcadorMaterial, new Matrix4x4[] { Matrix4x4.TRS(new Vector3(0, 0, 0), Quaternion.identity, Vector3.one) }, 1);
@@ -101,22 +119,35 @@ public class GerenteEncontros : MonoBehaviour
         Vector3 tamanhoMarcador = new Vector3(2f, 20f, 2f); // Ajusta a escala para 2x em cada eixo
 
         // Cria a instância de mesh do marcador na posição do encontro com a escala ajustada
-//        Graphics.DrawMeshInstanced(marcadorMesh, 0, marcadorMaterial,
-//            new Matrix4x4[] { Matrix4x4.TRS(posicao, Quaternion.identity, tamanhoMarcador) }, 1, propertyBlock);
-
+        //        Graphics.DrawMeshInstanced(marcadorMesh, 0, marcadorMaterial,
+        //            new Matrix4x4[] { Matrix4x4.TRS(posicao, Quaternion.identity, tamanhoMarcador) }, 1, propertyBlock);
+        if (cilindroPrefab == null)
+        {
+            DebugController.LogWarning(DebugCategoria.GerenteEncontros, "CriarMarcador ▸ cilindroPrefab não atribuído. Abortando criação do marcador.");
+            return;
+        }
         // Instancia o marcador (cilindro) no ponto de encontro
         GameObject marcador = Instantiate(cilindroPrefab, posicao, Quaternion.identity);
-
         // Ajusta a altura e o raio do cilindro, caso necessário
-        marcador.transform.localScale = new Vector3(raioCilindro*4, alturaCilindro , 4*raioCilindro);
+        marcador.transform.localScale = new Vector3(raioCilindro * 4, alturaCilindro, 4 * raioCilindro);
+
+        // Parentear sob "todosencontros" para manter hierarquia organizada
+        if (todosEncontrosParent == null)
+        {
+            var exist = GameObject.Find(todosEncontrosName);
+            if (exist != null) todosEncontrosParent = exist.transform;
+        }
+        if (todosEncontrosParent != null)
+            marcador.transform.SetParent(todosEncontrosParent, true);
+
 
         // Adiciona o marcador à lista de marcadores ativos
-//        marcadoresAtivos.Add(marcador);
+        marcadoresAtivos.Add(marcador);
         // (Opcional) Você pode adicionar mais funcionalidades aqui, como animações ou efeitos de partículas
         // Cria a matriz de transformação para o marcador
-//        Matrix4x4 matriz = Matrix4x4.TRS(posicao, Quaternion.identity, Vector3.one);
-        // Adiciona a matriz à lista de instâncias
-//        marcadoresMatrices.Add(matriz);
+        Matrix4x4 matriz = Matrix4x4.TRS(posicao, Quaternion.identity, Vector3.one);
+        //Adiciona a matriz à lista de instâncias
+        marcadoresMatrices.Add(matriz);
     }
 
     // Método para gerar uma chave única para os encontros entre dois agentes (para evitar duplicação)
@@ -144,8 +175,29 @@ public class GerenteEncontros : MonoBehaviour
     }
     public void DeletarMarcadores()
     {
+        // Destroi os marcadores instanciados e limpa listas
+        if (marcadoresAtivos != null)
+        {
+            for (int i = marcadoresAtivos.Count - 1; i >= 0; i--)
+            {
+                var m = marcadoresAtivos[i];
+                if (m != null)
+                {
+#if UNITY_EDITOR
+                    if (Application.isPlaying) Destroy(m);
+                    else DestroyImmediate(m);
+#else
+                    Destroy(m);
+#endif
+                }
+            }
+            marcadoresAtivos.Clear();
+        }
+
         // Limpa a lista de matrizes, o que efetivamente "deleta" os marcadores ao não desenhá-los mais
-        marcadoresMatrices.Clear();
+        if (marcadoresMatrices != null) marcadoresMatrices.Clear();
+
         Debug.Log("Todos os marcadores foram deletados.");
     }
+
 }
