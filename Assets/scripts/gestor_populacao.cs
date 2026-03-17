@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
-using System.Runtime.InteropServices;
 
 public class gestor_populacao : MonoBehaviour
 {
@@ -45,20 +42,13 @@ public class gestor_populacao : MonoBehaviour
         Ambiente.Total_Pessoas = total;
         DebugController.Log(DebugCategoria.GestorPopulacao, $"popular ▸ gerando {total} pessoas");
 
-        for (int i = 0; i < total; i++)
-        {
-            cPessoa nova = new cPessoa($"pessoa_{i}");
-            nova.Inicializar();
-            Ambiente.todas_as_pessoas.Add(nova);
-
-            /*
-            GameObject go = Instantiate(pfGente, new Vector3(2, 0, 2 * i) + Vector3.up * 1.8f, Quaternion.identity);
-            Rotina rotina = go.AddComponent<Rotina>();
-            rotina.pessoa = nova;
-            go.name = nova.identidade;
-            go.transform.parent = as_pessoas.transform;
-            */
-        }
+        Ambiente.gerentePessoas.CriarPessoas(total); ///MIGRAR TUDO PARA GERENTE DE PESSOAS
+        //        for (int i = 0; i < total; i++)
+        //        {
+        //            cPessoa nova = new cPessoa($"pessoa_{i}");
+        //            nova.Inicializar();
+        //            Ambiente.todas_as_pessoas.Add(nova);
+        //        }
     }
 
     public void ResetPopulacao()
@@ -81,10 +71,10 @@ public class gestor_populacao : MonoBehaviour
         var matriz = salvador.GerarMatrizSimplesDeCenas();
 
 #if UNITY_EDITOR
-    GetComponent<SalvarRedes>().SalvarRedeSimples(matriz, caminho);
-    salvador.SalvarRedeSimples(matriz, caminho);
-    salvador.SalvarMatrizBinaria(matriz, caminho);
-    Debug.Log("SalvarRedeAtual -> arquivo salvo em: " + caminho);
+        GetComponent<SalvarRedes>().SalvarRedeSimples(matriz, caminho);
+        salvador.SalvarRedeSimples(matriz, caminho);
+        salvador.SalvarMatrizBinaria(matriz, caminho);
+        Debug.Log("SalvarRedeAtual -> arquivo salvo em: " + caminho);
 #endif
 
         var matriz_download = salvador.GerarStringMatrizBinaria(matriz);

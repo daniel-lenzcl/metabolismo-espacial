@@ -1,7 +1,3 @@
-using UnityEngine;
-using System.Collections.Generic;
-using System.IO;
-using UnityEngine.Events;
 /*
 /// <summary>
 /// recebe o mapa, reconhece e organiza por camadas, e ajusta o tamanho da escala e do terreno

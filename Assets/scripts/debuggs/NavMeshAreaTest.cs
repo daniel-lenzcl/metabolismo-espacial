@@ -1,7 +1,7 @@
-using UnityEngine;
 using Unity.AI.Navigation;
-using NavMeshSurface = Unity.AI.Navigation.NavMeshSurface;
+using UnityEngine;
 using NavMeshModifier = Unity.AI.Navigation.NavMeshModifier;
+using NavMeshSurface = Unity.AI.Navigation.NavMeshSurface;
 
 public class NavMeshAreaTest : MonoBehaviour
 {

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
-using System;
 using System.Text;
+using UnityEngine;
 /// <summary>
 /// Salva matrizes de redes sociais entre agentes.
 /// </summary>

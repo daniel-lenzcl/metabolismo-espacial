@@ -1,0 +1,774 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="UnityEngine.AI.NavMeshLink" Collapsed="true">
+    <Position X="14.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAgCAABgABAAABAQEEkQAEJAAAgAGGYAAgAAEAASAE=</HashCode>
+      <FileName>Assets\NavMeshLink.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnityEngine.AI.NavMeshModifier" Collapsed="true">
+    <Position X="16.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAQAAAAAAAAAAAAQAAAAAABAAAgIAAgQAAAACCM=</HashCode>
+      <FileName>Assets\NavMeshModifier.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnityEngine.AI.NavMeshModifierVolume" Collapsed="true">
+    <Position X="18" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAgAAAQAAAAAAAAEAIAQAAAAAAAAAAAIAAgAAAIACAM=</HashCode>
+      <FileName>Assets\NavMeshModifierVolume.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnityEngine.AI.NavMeshSurface" Collapsed="true">
+    <Position X="0.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ikgQBAgAhYEgAAIEgKFRQAAoIIABICC8AAgUglIAWgA=</HashCode>
+      <FileName>Assets\NavMeshSurface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dummiesman.CharWordReader" Collapsed="true">
+    <Position X="18" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAABIQAIAAgBAAAQBAACEABAAgIAIgBAhAAQCAA=</HashCode>
+      <FileName>Assets\OBJImport\CharWordReader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dummiesman.OBJLoader" Collapsed="true">
+    <Position X="7.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAgAAAEAAAAAAAAAAAABAACAAAAAQAEMAAAAAAgAA=</HashCode>
+      <FileName>Assets\OBJImport\OBJLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dummiesman.OBJLoaderHelper" Collapsed="true">
+    <Position X="9.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAFAAAIAAAAACAAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>Assets\OBJImport\OBJLoaderHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dummiesman.OBJObjectBuilder" Collapsed="true">
+    <Position X="11" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAEAIAAAgAAAAAEAAAAAQACAgAgEgAhAAAAAAAA=</HashCode>
+      <FileName>Assets\OBJImport\OBJObjectBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dummiesman.StringExtensions" Collapsed="true">
+    <Position X="18" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Assets\OBJImport\StringExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dummiesman.BinaryExtensions" Collapsed="true">
+    <Position X="11" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\OBJImport\TextureLoader\BinaryExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dummiesman.DDSLoader" Collapsed="true">
+    <Position X="11" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\OBJImport\TextureLoader\DDSLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dummiesman.ImageLoader" Collapsed="true">
+    <Position X="14.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Assets\OBJImport\TextureLoader\ImageLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dummiesman.ImageLoaderHelper" Collapsed="true">
+    <Position X="16.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Assets\OBJImport\TextureLoader\ImageLoaderHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dummiesman.ImageUtils" Collapsed="true">
+    <Position X="18" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>Assets\OBJImport\TextureLoader\ImageUtils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dummiesman.TGALoader" Collapsed="true">
+    <Position X="9.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAgAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Assets\OBJImport\TextureLoader\TGALoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MTLLoader" Collapsed="true">
+    <Position X="11" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAwAgAAAAAAAAAIoABAACABAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\OBJImport\MTLLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ObjFromFile" Collapsed="true">
+    <Position X="4" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACEAAAAAAAAAAAAAAACAAAAAAQA=</HashCode>
+      <FileName>Assets\OBJImport\Samples\ObjFromFile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ObjFromStream" Collapsed="true">
+    <Position X="5.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\OBJImport\Samples\ObjFromStream.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="molde_atividades" Collapsed="true">
+    <Position X="5.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>Assets\script moldes agentes\molde_atividades.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="molde_pessoas" Collapsed="true">
+    <Position X="7.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAEAIAAAAgBAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\script moldes agentes\molde_pessoas.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="so_Predios" Collapsed="true">
+    <Position X="16.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAEAgAAAQAQAAAAAAAAAAAAACQBAAAAAAAAAACAgA=</HashCode>
+      <FileName>Assets\scriptable obj\SO_Atividade.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SO_pessoa" Collapsed="true">
+    <Position X="14.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAIAAAAgBAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\scriptable obj\SO_pessoa.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="casa" Collapsed="true">
+    <Position X="12.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAACAIAABAAAAAAAAAAAAAAAAAAAIAAACAAAA=</HashCode>
+      <FileName>Assets\scripts\agentes\casa.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DefinicaoPortas" Collapsed="true">
+    <Position X="14.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAACAAAAACIAAAAABAAAAABwABAAEA=</HashCode>
+      <FileName>Assets\scripts\agentes\configuracoes predios\DefinicaoPortas.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mPredios" Collapsed="true">
+    <Position X="9.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EIBAgYAAMiAAABAAkGBAgQQAACYAAIFAQAAwBEIIQow=</HashCode>
+      <FileName>Assets\scripts\agentes\mPredios.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CaminhoTrail" Collapsed="true">
+    <Position X="9.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAEAAAAAQAAAAAAAQABAABBQAACAAAAAAAAAAAEA=</HashCode>
+      <FileName>Assets\scripts\agentes\pessoas\CaminhoTrail.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="cPessoa" Collapsed="true">
+    <Position X="7.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgKAAQgAAAAAAAAMBAEAgBEAYAQBCIAAiAAAAAYEABA=</HashCode>
+      <FileName>Assets\scripts\agentes\pessoas\cPessoa.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EncontroInfo" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\scripts\agentes\pessoas\EncontroInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ParaConectar" Collapsed="true">
+    <Position X="14.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAIAAAAAIQBAAAAAAAAA=</HashCode>
+      <FileName>Assets\scripts\agentes\pessoas\ParaConectar.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rotina" Collapsed="true">
+    <Position X="5.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ZAQBBAAAACAEgxAAAAAAgAAIMBQAAJAIAZEQAACAAMA=</HashCode>
+      <FileName>Assets\scripts\agentes\pessoas\Rotina.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TarefaRotina" Collapsed="true">
+    <Position X="0.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAiAAAAAQACEAAAAAAAAAAiARAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\scripts\agentes\pessoas\TarefaRotina.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Predios" Collapsed="true">
+    <Position X="0.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAg=</HashCode>
+      <FileName>Assets\scripts\agentes\Predios.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SalvarRedes" Collapsed="true">
+    <Position X="7.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAQEAAAAEAAAAAAAAAQAAAAAAAAAAgEAAAAgA=</HashCode>
+      <FileName>Assets\scripts\agentes\SalvarRedes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ajusteCamera" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACIAAAQAAAAAAAAAAAAAAAAAQAgACAAAAAAEAAAAAA=</HashCode>
+      <FileName>Assets\scripts\antigos\ajusteCamera.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="botao_dia" Collapsed="true">
+    <Position X="18" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQgAAAAACAAAAAAgAAAAAAAAACAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\scripts\antigos\botao_dia.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="cContatos" Collapsed="true">
+    <Position X="14.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\scripts\antigos\cContatos.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="cCrianca" Collapsed="true">
+    <Position X="16.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAASAAAAAAABAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\scripts\antigos\cCrianca.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Lugar" Collapsed="true">
+    <Position X="2.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAgQAAAAQAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Assets\scripts\antigos\cLugar.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="conectados" Collapsed="true">
+    <Position X="4" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAQAAgCAACAAAAAAAIAAAAQAAAMAAIAAYAAAgAACwAA=</HashCode>
+      <FileName>Assets\scripts\antigos\conectados.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="crianca" Collapsed="true">
+    <Position X="9.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\scripts\antigos\crianca.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="horasvelhas" Collapsed="true">
+    <Position X="12.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACBQAAgAAAAAAAAAAAAAAARAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\scripts\antigos\horas velha.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Mapas" Collapsed="true">
+    <Position X="4" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAFQAAAACAAAAAAAEAgAAACBAAAIAAAEggAAIAAABA=</HashCode>
+      <FileName>Assets\scripts\antigos\Mapas.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="pessoa" Collapsed="true">
+    <Position X="16.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAwAAAADACggAAIAhCAQCgAEIBAAiAAAAgEQAACAAAI=</HashCode>
+      <FileName>Assets\scripts\antigos\pessoa.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="populacao" Collapsed="true">
+    <Position X="18" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgEQAIAAAABEAAAAACQBAAAAAEABAAAQAgAAAEA=</HashCode>
+      <FileName>Assets\scripts\antigos\populacao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="rede" Collapsed="true">
+    <Position X="2.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAQACAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\scripts\antigos\rede.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="relacoes" Collapsed="true">
+    <Position X="4" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEQFRBABACAAAYAAAEBgAAAAAAAQAQAAEgAAAAAQABA=</HashCode>
+      <FileName>Assets\scripts\antigos\relacoes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CarregarMapa" Collapsed="true">
+    <Position X="11" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABgAgACABACKAAAQAQBAAAAQQMSABEIECEMBAACI=</HashCode>
+      <FileName>Assets\scripts\CarregarMapa.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DebugController" Collapsed="true">
+    <Position X="12.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAIAgAAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\scripts\debuggs\DebugCategoria.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NavMeshAreaTest" Collapsed="true">
+    <Position X="12.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAASAAAAAAAAAAAAAAAAEABBIABAAAAAAAAAA=</HashCode>
+      <FileName>Assets\scripts\debuggs\NavMeshAreaTest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gerente_de_ambiente" Collapsed="true">
+    <Position X="4" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIQgAAABADAAAkADAAAAgCAAAAAAAAAIAAEAAIAAiAA=</HashCode>
+      <FileName>Assets\scripts\gerente_de_ambiente.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GerenteEncontros" Collapsed="true">
+    <Position X="7.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ECQACAMAACAAAAAAAAAgAAkAAIAgARAIAACAAAAgSQE=</HashCode>
+      <FileName>Assets\scripts\GerenteEncontros.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gestor_populacao" Collapsed="true">
+    <Position X="9.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAEAAEAGAAAADAAAAAEAEAAAAAAAEAABAAAAAAAAA=</HashCode>
+      <FileName>Assets\scripts\gestor_populacao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="horas" Collapsed="true">
+    <Position X="11" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEYAAAAAACBwAAggAIAAAAAAAEAAAARAAAAAAAAAAAg=</HashCode>
+      <FileName>Assets\scripts\horas.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="botoes" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAIAAABGAAAAAFgAAAAAgAAAAAIBAAABAAAACAQEA=</HashCode>
+      <FileName>Assets\scripts\interface\botoes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ControleCamera" Collapsed="true">
+    <Position X="5.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQCFYBQACQQABAASQIkgAAQgCAIEECgCAQpAgBAClw=</HashCode>
+      <FileName>Assets\scripts\interface\ControleCamera.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="gerente_paineis" Collapsed="true">
+    <Position X="5.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACAAAAAAAAABAAAACAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Assets\scripts\interface\gerente_paineis.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="painel_tipo_pessoa" Collapsed="true">
+    <Position X="12.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQQAAAUAgnAEAACAAAAABAFACAABAlQAIMQACAAACAA=</HashCode>
+      <FileName>Assets\scripts\interface\painel_tipo_pessoa.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UIReadyNotifier" Collapsed="true">
+    <Position X="12.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAACgA=</HashCode>
+      <FileName>Assets\scripts\interface\UIReadyNotifier.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="levelgenerator" Collapsed="true">
+    <Position X="0.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BABUBAJBACgIAAIEACAEAYBBAiEMYAABAAAQASBIBRA=</HashCode>
+      <FileName>Assets\scripts\levelgenerator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BuildOptimizer" Collapsed="true">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAICAGAAACAAAgABAAAAAQAAAEAAABACIAAEAQAAAEA=</HashCode>
+      <FileName>Assets\scripts\Upload Arquivos\BuildOptimizer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BuildOptimizerManager" Collapsed="true">
+    <Position X="4" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAIAEAICAAAAAhAAAKQQAAwQAAAAEQ=</HashCode>
+      <FileName>Assets\scripts\Upload Arquivos\BuildOptimizerManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CamadaInfo" Collapsed="true">
+    <Position X="5.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\scripts\Upload Arquivos\CamadaInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DetectorTamanhoArquivo" Collapsed="true">
+    <Position X="16.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAIBECAAAAIAAAAAAAAAAAAAAAhAAAAATAABAAAAAA=</HashCode>
+      <FileName>Assets\scripts\Upload Arquivos\DetectorTamanhoArquivo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TratamentoMapaCarregado" Collapsed="true">
+    <Position X="11" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BgAgCAAABCA0CEBAAEBQQAAAISAAAgAAAAgMQADAQAA=</HashCode>
+      <FileName>Assets\scripts\Upload Arquivos\TratamentoMapaCarregado.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebGLFileUploader" Collapsed="true">
+    <Position X="5.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ASCgSAAIkCBJIABAAADAAQCAAVggAABBAAIgEIBAACA=</HashCode>
+      <FileName>Assets\scripts\Upload Arquivos\WebGLFileUploader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChatController" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAQAAAAAAAAAAAICEAAAAAACAA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DropdownSample" Collapsed="true">
+    <Position X="18" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAQAAAAAAIIAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\DropdownSample.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EnvMapAnimator" Collapsed="true">
+    <Position X="2.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAACAAAAAAAAAgAAAAAAQAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\EnvMapAnimator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="B83.Image.BMP.BMPImage" Collapsed="true">
+    <Position X="14.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAQAAAAAAAAAoAAAIAAgAACAAAAAQAAAAAEAAAA=</HashCode>
+      <FileName>Assets\OBJImport\TextureLoader\BMPLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="B83.Image.BMP.BMPLoader" Collapsed="true">
+    <Position X="16.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>kAAEAGAAAAAAAIIAAIAAQAAAAAIABAAAJABAAAAAAAI=</HashCode>
+      <FileName>Assets\OBJImport\TextureLoader\BMPLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="B83.Image.BMP.BitStreamReader" Collapsed="true">
+    <Position X="12.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAgAAAgIAAAAAIAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Assets\OBJImport\TextureLoader\BMPLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dummiesman.Extensions.ColorExtensions" Collapsed="true">
+    <Position X="2.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\OBJImport\TextureLoader\ColorExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.Benchmark01" Collapsed="true">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YAAAAAIAACAAAAAAAAQAAAAIAAQAAAAAgAABAAAAAAA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.Benchmark01_UGUI" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YAAAAAAAACAAAAAAAAQAAAAKAAQAAAAAgAABAAAAAAA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.Benchmark02" Collapsed="true">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAACAAAAAEAAAAAAABAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.Benchmark03" Collapsed="true">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACCAAAAAAAAAAAAAAAAAQAAAAAAAAAAAEEA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.Benchmark04" Collapsed="true">
+    <Position X="9.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAADAAAIACAAAAAAAAAAAAAAAAAAAAAAAQAAAAABAAA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark04.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.CameraController" Collapsed="true">
+    <Position X="7.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEQAEAAEADAEBEAgAIQAIEABAAAFgYQQACAAAAAAIEA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.ObjectSpin" Collapsed="true">
+    <Position X="2.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABQAAEAIAAAAAAAAAAAAQAAAEABAIAgAAAAAAQBAAEA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ObjectSpin.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.ShaderPropAnimator" Collapsed="true">
+    <Position X="9.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAACAAAAAAAAAgAEAAAAAAAAAAAAAAAQAgAEA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ShaderPropAnimator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.SimpleScript" Collapsed="true">
+    <Position X="11" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACAAABAAAAAAAEAAAAQAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SimpleScript.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.SkewTextExample" Collapsed="true">
+    <Position X="12.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAEAACAAAAAAAAAAAAAABAEAAAAAIAAAAAACAEA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SkewTextExample.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.TeleType" Collapsed="true">
+    <Position X="2.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YAAAAAAAACAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TeleType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.TextConsoleSimulator" Collapsed="true">
+    <Position X="4" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAACAAAAAAAAAAAAAABAAAAAAIAMAAAAACCEA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextConsoleSimulator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.TextMeshProFloatingText" Collapsed="true">
+    <Position X="5.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABACICAJACAAAAAAAAAAAAAJAAQAQAAAAABAACAACEI=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.TextMeshSpawner" Collapsed="true">
+    <Position X="7.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAACAAAAAEAAAAAAABAAAAAAAAAAAAAAAACEA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshSpawner.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.TMP_ExampleScript_01" Collapsed="true">
+    <Position X="12.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAgAIBAAAAAAAAAAACAAAAIAAAAAAAEA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.TMP_FrameRateCounter" Collapsed="true">
+    <Position X="14.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AoQAAAAAACAAAIgAAAAgAIAAAgQAAAAAAAAAAAAAAEg=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.TMP_TextEventCheck" Collapsed="true">
+    <Position X="18" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>kAAAAAAAAAAAAAAAAAAAAAAEAAAAAAEJAAAAAAACCAA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventCheck.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.TMP_TextInfoDebugTool" Collapsed="true">
+    <Position X="2.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIEAAIYACACAAAggAAQAAAAoABKAAEAAACAgQACgAI=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextInfoDebugTool.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.TMP_TextSelector_A" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAAAAAAIAAAAAQoAAAAAAAAAQAAAWA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_A.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TMPro.Examples.TMP_TextSelector_B" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAKAAABBGgAAAIAQAQAAIAAIgAQoAABIAEAAAQAACEA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TMPro.Examples.TMP_UiFrameRateCounter" Collapsed="true">
+    <Position X="7.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AoQAAAAAACAAAAgAAAAgAIAAAgQAAAAAAAAAAAAAAEg=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_UiFrameRateCounter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.TMPro_InstructionOverlay" Collapsed="true">
+    <Position X="9.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAIAAAAAAIgAAAAgAAAAAAQAAAAACAAAAAAAAEA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMPro_InstructionOverlay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.VertexColorCycler" Collapsed="true">
+    <Position X="14.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAgAAAAAAAACAEA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexColorCycler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.VertexJitter" Collapsed="true">
+    <Position X="16.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAACAAAAAAAAAFAAAAAAAAAAgIAMAAAAACCEA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.VertexShakeA" Collapsed="true">
+    <Position X="18" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAACAAAFAACAAAAAAAgIAMAAAAACCEA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.VertexShakeB" Collapsed="true">
+    <Position X="0.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAACAAAAAAAAAFAAAAAAAAAAgIAMAAAAACCEA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.VertexZoom" Collapsed="true">
+    <Position X="2.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAACAAAAAAAAAFAAAAAAAAAAgIAMAAAAACCEA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.Examples.WarpTextExample" Collapsed="true">
+    <Position X="4" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAEAACAAAAAAAAAFAAAABAAAAAAAIAAAAAACAEA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.TMP_DigitValidator" Collapsed="true">
+    <Position X="11" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_DigitValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.TMP_PhoneNumberValidator" Collapsed="true">
+    <Position X="16.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_PhoneNumberValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TMPro.TMP_TextEventHandler" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAgAEEAAAAAMABAAEAIEAIAUApAAAAAAAAAYACBWE=</HashCode>
+      <FileName>Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="UnityEngine.ScriptableObject" Collapsed="true">
+    <Position X="20.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Struct Name="B83.Image.BMP.BMPFileHeader" Collapsed="true">
+    <Position X="2.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAIAAAAAAAAAEAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>Assets\OBJImport\TextureLoader\BMPLoader.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="B83.Image.BMP.BitmapInfoHeader" Collapsed="true">
+    <Position X="0.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAEAAAgAAAQAQIAAAIAAAAAAAAAkAACAAgAAIEA=</HashCode>
+      <FileName>Assets\OBJImport\TextureLoader\BMPLoader.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="UnityEngine.AI.CollectObjects" Collapsed="true">
+    <Position X="2.25" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAIIAAAAAAAA=</HashCode>
+      <FileName>Assets\NavMeshSurface.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Dummiesman.SplitMode" Collapsed="true">
+    <Position X="5.75" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Assets\OBJImport\OBJLoader.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DebugCategoria" Collapsed="true">
+    <Position X="4" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQCAQAVAAIgIAEAEAIDAgABAAAAAQAEAAAACABQCA=</HashCode>
+      <FileName>Assets\scripts\debuggs\DebugCategoria.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="B83.Image.BMP.BMPComressionMode" Collapsed="true">
+    <Position X="0.5" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAJAAAAAAACAABiAACAQAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Assets\OBJImport\TextureLoader\BMPLoader.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

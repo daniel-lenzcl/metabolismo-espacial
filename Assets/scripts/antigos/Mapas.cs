@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -221,9 +220,9 @@ public class Mapas : MonoBehaviour
 
     public void selecionaMapa(Dropdown dropMapa)
     {
-//        GameObject.Find("Terrain").GetComponent<levelgenerator>().iniciaMapa();
+        //        GameObject.Find("Terrain").GetComponent<levelgenerator>().iniciaMapa();
         tipoMapa = dropMapa.options[dropMapa.value].text;
-//        Debug.Log("MAPAS-SELECIONA TIPO MAPA: o tipo eh:" + tipoMapa);
+        //        Debug.Log("MAPAS-SELECIONA TIPO MAPA: o tipo eh:" + tipoMapa);
         DebugController.Log(DebugCategoria.Mapas, $"selecionaMapa ▸ o tipo eh: '{tipoMapa}'");
 
     }
@@ -232,14 +231,14 @@ public class Mapas : MonoBehaviour
     {
         levelgenerator_local_mapas.tipoDistribuicao = dropDistribuicao.options[dropDistribuicao.value].text;
         //string td
-//        Debug.Log("MAPAS-SELECIONA DISTRIBUICAO ATIVIDADES: distribuicao eh:" +geral.GetComponent<levelgenerator>().tipoDistribuicao);
+        //        Debug.Log("MAPAS-SELECIONA DISTRIBUICAO ATIVIDADES: distribuicao eh:" +geral.GetComponent<levelgenerator>().tipoDistribuicao);
         DebugController.Log(DebugCategoria.Mapas, $"selecionaDistribuicao ▸distribuicao eh: '{levelgenerator_local_mapas.tipoDistribuicao}'");
 
     }
 
     public void botaoMapa()
     {
-//        Debug.Log("MAPAS - BOTAO MAPA ->comeco: contagem de predios: " + geral.GetComponent<levelgenerator>().predios.Count);
+        //        Debug.Log("MAPAS - BOTAO MAPA ->comeco: contagem de predios: " + geral.GetComponent<levelgenerator>().predios.Count);
         levelgenerator_local_mapas.iniciaMapa();
         levelgenerator_local_mapas.setaListas("enderecos");
         //        GameObject.Find("Terrain").GetComponent<levelgenerator>().mapaCruz();
@@ -253,36 +252,36 @@ public class Mapas : MonoBehaviour
         switch (tipoMapa)
         {
             case "aleatorio":
-//                Debug.Log("MAPAS - BOTAOMAPA: aleatorio");
+                //                Debug.Log("MAPAS - BOTAOMAPA: aleatorio");
                 levelgenerator_local_mapas.mapaAleatorio();
-//                geral.levelgenerator.mapaAleatorio();
-//                mapaAleatorio();
+                //                geral.levelgenerator.mapaAleatorio();
+                //                mapaAleatorio();
                 break;
             case "matriz":
-//                Debug.Log("MAPAS - BOTAOMAPA: matriz");
+                //                Debug.Log("MAPAS - BOTAOMAPA: matriz");
                 levelgenerator_local_mapas.mapaMatriz();
                 //                mapaMatriz();
                 break;
             case "cruz":
-//                Debug.Log("MAPAS - BOTAOMAPA: cruz");
+                //                Debug.Log("MAPAS - BOTAOMAPA: cruz");
                 levelgenerator_local_mapas.mapaCruz();
 
                 //              mapaCruz();
                 break;
             case "linha":
-//                Debug.Log("MAPAS - BOTAOMAPA: linha");
+                //                Debug.Log("MAPAS - BOTAOMAPA: linha");
                 levelgenerator_local_mapas.mapaLinha();
 
                 //            mapaLinha();
                 break;
             case "circulo":
-//                Debug.Log("MAPAS - BOTAOMAPA: circulo");
+                //                Debug.Log("MAPAS - BOTAOMAPA: circulo");
                 levelgenerator_local_mapas.mapaCirculo();
                 //          mapaCirculo();
                 break;
         }
-//        Debug.Log("MAPAS - BOTAO MAPA ->final: contagem de predios: " + geral.GetComponent<levelgenerator>().predios.Count);
-//        geral.GetComponent<levelgenerator>().colocaPessoas();
+        //        Debug.Log("MAPAS - BOTAO MAPA ->final: contagem de predios: " + geral.GetComponent<levelgenerator>().predios.Count);
+        //        geral.GetComponent<levelgenerator>().colocaPessoas();
         GameObject.Find("Terrain").GetComponent<horas>().Start();
 
 

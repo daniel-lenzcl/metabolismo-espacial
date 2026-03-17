@@ -22,7 +22,7 @@ public class ParaConectar : MonoBehaviour
 
         minhaPessoa = GetComponent<Rotina>().pessoa;
         if (minhaPessoa == null)
-        DebugController.LogWarning(DebugCategoria.ParaConectar, "Start: Nenhuma referência à 'pessoa'");
+            DebugController.LogWarning(DebugCategoria.ParaConectar, "Start: Nenhuma referência à 'pessoa'");
 
     }
 
@@ -44,7 +44,7 @@ public class ParaConectar : MonoBehaviour
 
         // OBTER tempo simulado
         var h = FindObjectOfType<horas>();
-        int dia = h?.dias ?? 0;
+        int dia = h?.dia ?? 0;
         int hora = h?.hora ?? 0;
         int min = h?.min ?? 0;
 
@@ -54,6 +54,6 @@ public class ParaConectar : MonoBehaviour
 
         gerenteEncontros.RegistrarEncontro(minhaPessoa, outraPessoa, pos);
 
-        DebugController.Log(DebugCategoria.ParaConectar, $"ENCONTRO: {encontro} com {encontro.outro.identidade }");
+        DebugController.Log(DebugCategoria.ParaConectar, $"ENCONTRO: {encontro} com {encontro.outro.identidade}");
     }
 }

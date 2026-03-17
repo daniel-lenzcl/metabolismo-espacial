@@ -1,15 +1,17 @@
 ﻿using Dummiesman;
+using System.Collections;
 using System.IO;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
-using System.Collections;
 
-public class ObjFromStream : MonoBehaviour {
+public class ObjFromStream : MonoBehaviour
+{
     private const string url = "https://people.sc.fsu.edu/~jburkardt/data/obj/lamp.obj";
 
     // Start agora é uma coroutine assíncrona
-    IEnumerator Start () {
+    IEnumerator Start()
+    {
         using (UnityWebRequest www = UnityWebRequest.Get(url))
         {
             yield return www.SendWebRequest();

@@ -1,10 +1,9 @@
 ﻿// Arquivo completo com pequena correção: se o molde existir mas não definir tarefas,
 // caímos no fluxo padrão (rotina circular), evitando bloquear a instanciação das pessoas.
 
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.Events;
 
 [System.Serializable]
@@ -12,7 +11,14 @@ public class cPessoa
 {
     public UnityEvent OnCasaDefinida = new UnityEvent();
 
+    public string tipoId; //tipo de pessoa baseada no TemplatePessoa
+    public int numeroIdentidade; // número para diferenciar pessoas do mesmo tipo
+    public TemplatePessoa meuTemplate; // referência ao template usado
+    public RotinaBase minhaRotinaBase;
+    public GerentePessoas gerentePessoas;
+
     public string identidade;
+    public string IdentidadeCompleta => $"{numeroIdentidade}_{tipoId}";
     public GameObject tipoPessoa; // prefab/tipo visual (opcional)
     public GameObject objPessoa;
 
@@ -53,6 +59,12 @@ public class cPessoa
     public cPessoa(string mnome)
     {
         this.identidade = mnome;
+    }
+    public cPessoa(string nome_template, int numeral)
+    {
+        this.tipoId = nome_template;
+        this.numeroIdentidade = numeral;
+        this.identidade = nome_template + numeroIdentidade.ToString();
     }
 
     public cPessoa(GameObject prefab, string mnome)
@@ -128,12 +140,12 @@ public class cPessoa
             if (horageral != null)
             {
                 // usa horageral (componente horas do GameObject 'ambiente')
-                horaAtual = Mathf.FloorToInt((float)horageral.hora) % 24;
+                horaAtual = Mathf.FloorToInt(horageral.hora) % 24;
             }
             else
             {
                 var relogio = GameObject.FindObjectOfType<horas>();
-                if (relogio != null) horaAtual = Mathf.FloorToInt((float)relogio.hora) % 24;
+                if (relogio != null) horaAtual = Mathf.FloorToInt(relogio.hora) % 24;
             }
 
             TarefaRotina tarefaInicial = null;
@@ -201,7 +213,7 @@ public class cPessoa
             objPessoa.transform.position = posFinal;
         }
 
-//        Debug.Log($"Instanciado o agente {identidade} na posição válida da NavMesh: {posFinal}");
+        //        Debug.Log($"Instanciado o agente {identidade} na posição válida da NavMesh: {posFinal}");
         DebugController.Log(DebugCategoria.cPessoa, $"cPessoa/InstanciaPessoa ▸ tracking: Instanciado o agente {identidade} na posição válida da NavMesh: {posFinal} ");
 
 
@@ -277,6 +289,189 @@ public class cPessoa
         DebugController.Log(DebugCategoria.tracking, $"InicializaEnderecos ▸ tracking");
 
         EnderecosPorCamada.Clear();
+        MminhaCasa = null;
+        MmeuTrabalho = null;
+        MmeuRestaurante = null;
+        rotinaListaTarefa.Clear();
+        enderecosEditor.Clear();
+
+        if (ambiente == null || ambiente.mCamadas == null || ambiente.mCamadas.Count == 0)
+        {
+            DebugController.LogWarning(DebugCategoria.cPessoa, "InicializaEnderecos ▸ nenhuma camada disponível no ambiente.");
+            OnCasaDefinida.Invoke();
+            return;
+        }
+
+        // tenta obter gerentePessoas a partir do ambiente, se ainda não tiver
+        if (gerentePessoas == null && ambiente != null)
+        {
+            gerentePessoas = ambiente.gerentePessoas;
+        }
+
+        // tenta obter template, se ainda não estiver atribuído diretamente
+        if (meuTemplate == null && gerentePessoas != null && !string.IsNullOrEmpty(tipoId))
+        {
+            gerentePessoas.TryGetTemplate(tipoId, out meuTemplate);
+        }
+
+        // se o template existir e ainda não houver rotina base atribuída, usa a do template
+        if (minhaRotinaBase == null && meuTemplate != null)
+        {
+            minhaRotinaBase = meuTemplate.rotinaBase;
+        }
+
+        // fluxo principal: rotina definida pelo template
+        if (minhaRotinaBase != null && minhaRotinaBase.slots != null && minhaRotinaBase.slots.Count > 0)
+        {
+            DebugController.Log(DebugCategoria.cPessoa,
+                $"InicializaEnderecos ▸ usando rotina do template '{tipoId}'");
+
+            foreach (var slot in minhaRotinaBase.slots)
+            {
+                if (string.IsNullOrEmpty(slot.tipoLugarId))
+                    continue;
+
+                string camadaId = slot.tipoLugarId.Trim().ToLower();
+
+                mPredios escolhido = null;
+
+                // se já escolheu prédio para essa camada, reutiliza
+                if (!EnderecosPorCamada.TryGetValue(camadaId, out escolhido))
+                {
+                    if (!ambiente.mCamadas.TryGetValue(camadaId, out var listaPredios) ||
+                        listaPredios == null || listaPredios.Count == 0)
+                    {
+                        DebugController.LogWarning(DebugCategoria.cPessoa,
+                            $"InicializaEnderecos ▸ camada '{camadaId}' sem prédios.");
+                        continue;
+                    }
+
+                    escolhido = EscolherEReservarPredio(listaPredios);
+
+                    if (escolhido == null)
+                    {
+                        DebugController.LogWarning(DebugCategoria.cPessoa,
+                            $"InicializaEnderecos ▸ falha ao selecionar prédio para camada '{camadaId}'.");
+                        continue;
+                    }
+
+                    EnderecosPorCamada[camadaId] = escolhido;
+                }
+
+                string lowerCam = camadaId.ToLower();
+                if (lowerCam.Contains("casa") && MminhaCasa == null) MminhaCasa = escolhido;
+                if (lowerCam.Contains("trabalho") && MmeuTrabalho == null) MmeuTrabalho = escolhido;
+                if (lowerCam.Contains("restaurante") && MmeuRestaurante == null) MmeuRestaurante = escolhido;
+
+                // converte minutos para hora inteira
+                int horaInicio = slot.inicioMin / 60;
+                int horaFim = slot.fimMin / 60;
+
+                // ajuste simples para evitar fim == 24
+                if (horaFim >= 24) horaFim = 0;
+
+                rotinaListaTarefa.Add(new TarefaRotina
+                {
+                    horaInicio = horaInicio,
+                    horaFim = horaFim,
+                    atividadeId = camadaId
+                });
+            }
+
+            DebugController.Log(DebugCategoria.cPessoa,
+                $"InicializaEnderecos ▸ endereços atribuídos pelo template: {EnderecosPorCamada.Count}");
+
+            UpdateEditorListFromDict();
+            OnCasaDefinida.Invoke();
+            return;
+        }
+
+        // fallback: nenhuma rotina válida no template
+        DebugController.Log(DebugCategoria.cPessoa,
+            $"InicializaEnderecos ▸ template '{tipoId}' sem rotina válida. Usando rotina circular padrão.");
+
+        var camadaNomes = ambiente.mCamadas.Keys
+            .Where(k =>
+            {
+                var lk = k.ToLower();
+                return lk != "rua" && lk != "escala";
+            })
+            .Select(k => k.Trim())
+            .Distinct(System.StringComparer.OrdinalIgnoreCase)
+            .OrderBy(k => k.ToLower())
+            .ToList();
+
+        if (camadaNomes.Count == 0)
+        {
+            DebugController.LogWarning(DebugCategoria.cPessoa,
+                "InicializaEnderecos ▸ nenhuma camada válida disponível para rotina circular.");
+            OnCasaDefinida.Invoke();
+            return;
+        }
+
+        foreach (var camada in camadaNomes)
+        {
+            var lista = ambiente.mCamadas[camada];
+            if (lista == null || lista.Count == 0) continue;
+
+            mPredios escolhido = EscolherEReservarPredio(lista);
+            if (escolhido == null)
+            {
+                DebugController.LogWarning(DebugCategoria.cPessoa,
+                    $"InicializaEnderecos ▸ registro em '{camada}' falhou ao criar padrão.");
+                continue;
+            }
+
+            EnderecosPorCamada[camada] = escolhido;
+
+            string lower = camada.ToLower();
+            if (lower.Contains("casa") && MminhaCasa == null) MminhaCasa = escolhido;
+            if (lower.Contains("trabalho") && MmeuTrabalho == null) MmeuTrabalho = escolhido;
+            if (lower.Contains("restaurante") && MmeuRestaurante == null) MmeuRestaurante = escolhido;
+        }
+
+        int n = EnderecosPorCamada.Count;
+        if (n == 0)
+        {
+            DebugController.LogWarning(DebugCategoria.cPessoa,
+                "InicializaEnderecos ▸ nenhuma camada com prédios disponível para rotina.");
+            OnCasaDefinida.Invoke();
+            return;
+        }
+
+        int baseBlock = 24 / n;
+        int extra = 24 - baseBlock * n;
+        int hour = 0;
+        var camadaList = EnderecosPorCamada.Keys.ToList();
+
+        for (int i = 0; i < camadaList.Count; i++)
+        {
+            int dur = baseBlock + (i < extra ? 1 : 0);
+            int start = hour;
+            int end = (hour + dur) % 24;
+
+            rotinaListaTarefa.Add(new TarefaRotina
+            {
+                horaInicio = start,
+                horaFim = end,
+                atividadeId = camadaList[i]
+            });
+
+            hour += dur;
+        }
+
+        DebugController.Log(DebugCategoria.cPessoa,
+            $"InicializaEnderecos ▸ rotina circular criada com {rotinaListaTarefa.Count} entradas.");
+
+        UpdateEditorListFromDict();
+        OnCasaDefinida.Invoke();
+    }
+
+    public void InicializaEnderecosAntigo()
+    {
+        DebugController.Log(DebugCategoria.tracking, $"InicializaEnderecos ▸ tracking");
+
+        EnderecosPorCamada.Clear();
         MminhaCasa = null; MmeuTrabalho = null; MmeuRestaurante = null;
         rotinaListaTarefa.Clear();
         enderecosEditor.Clear();
@@ -286,6 +481,24 @@ public class cPessoa
             DebugController.LogWarning(DebugCategoria.cPessoa, "InicializaEnderecos ▸ nenhuma camada disponível no ambiente.");
             OnCasaDefinida.Invoke();
             return;
+        }
+
+        // tenta obter gerentePessoas a partir do ambiente, se ainda não tiver
+        if (gerentePessoas == null && ambiente != null)
+        {
+            gerentePessoas = ambiente.GetComponent<GerentePessoas>();
+        }
+
+        // tenta obter template, se ainda não estiver atribuído diretamente
+        if (meuTemplate == null && gerentePessoas != null && !string.IsNullOrEmpty(tipoId))
+        {
+            gerentePessoas.TryGetTemplate(tipoId, out meuTemplate);
+        }
+
+        // se o template existir e ainda não houver rotina base atribuída, usa a do template
+        if (minhaRotinaBase == null && meuTemplate != null)
+        {
+            minhaRotinaBase = meuTemplate.rotinaBase;
         }
 
         // Se existem modelos configurados pelo usuário, tente usar o tipo atribuído a esta pessoa
@@ -498,8 +711,8 @@ public class cPessoa
                 kv.Value.RemoverMorador();
         }
 
-//        Debug.Log("fui destruido: " + identidade);
-        DebugController.LogWarning(DebugCategoria.cPessoa, $"despedida ▸ fui destruido:'{ identidade}'");
+        //        Debug.Log("fui destruido: " + identidade);
+        DebugController.LogWarning(DebugCategoria.cPessoa, $"despedida ▸ fui destruido:'{identidade}'");
     }
 }
 

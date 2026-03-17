@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Dummiesman
 {
@@ -22,9 +18,9 @@ namespace Dummiesman
             bool validFormat = false;
 
             //check each pixel alpha
-            foreach(var px in pixels)
+            foreach (var px in pixels)
             {
-                if(px.a < 255)
+                if (px.a < 255)
                 {
                     validFormat = true;
                     break;

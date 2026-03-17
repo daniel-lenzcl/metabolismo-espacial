@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿/*
+using System.Collections;
 using UnityEngine;
 using UnityEditor;
 
@@ -29,3 +30,4 @@ public class FieldOfViewEditor : Editor
     }
 
 }
+*/

@@ -1,14 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
+﻿using UnityEngine;
 
 public class cContatos
 {
     public GameObject contato;
-    public  float horacont;
-//    public List<string> contato;
-//    public List<float> vezesEncontro;
+    public float horacont;
+    //    public List<string> contato;
+    //    public List<float> vezesEncontro;
 
 
     public cContatos()
@@ -18,7 +15,7 @@ public class cContatos
     public cContatos(GameObject quem, float time)
     {
         this.contato = quem;
-//        this.horacont += time;
+        //        this.horacont += time;
         this.horacont = time;
     }
 }

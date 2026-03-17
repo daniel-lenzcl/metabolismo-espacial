@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.IO;
+﻿using Dummiesman.Extensions;
 using System;
-using Dummiesman.Extensions;
-using System.Runtime.InteropServices;
+using System.IO;
+using UnityEngine;
 
 namespace Dummiesman
 {
@@ -108,7 +105,7 @@ namespace Dummiesman
                 // Skip a byte of header information we don't care about.
                 r.BaseStream.Seek(1, SeekOrigin.Current);
 
-                Texture2D tex = new Texture2D(width, height, (bitDepth == 24) ? TextureFormat.RGB24 :  TextureFormat.ARGB32, true);
+                Texture2D tex = new Texture2D(width, height, (bitDepth == 24) ? TextureFormat.RGB24 : TextureFormat.ARGB32, true);
                 if (imageType == 2)
                 {
                     tex.SetPixels32(LoadRawTGAData(r, bitDepth, width, height));

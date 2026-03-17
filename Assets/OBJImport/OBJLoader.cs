@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using System;
-using Dummiesman;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -58,7 +57,7 @@ namespace Dummiesman
         [MenuItem("GameObject/Import From OBJ")]
         static void ObjLoadMenu()
         {
-            string pth =  EditorUtility.OpenFilePanel("Import OBJ", "", "obj");
+            string pth = EditorUtility.OpenFilePanel("Import OBJ", "", "obj");
             if (!string.IsNullOrEmpty(pth))
             {
                 System.Diagnostics.Stopwatch s = new System.Diagnostics.Stopwatch();

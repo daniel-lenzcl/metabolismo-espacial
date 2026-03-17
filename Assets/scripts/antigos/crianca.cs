@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using UnityEngine;
-using UnityEngine.AI;
+﻿using UnityEngine;
 
 public class crianca : MonoBehaviour
 {
@@ -14,8 +10,8 @@ public class crianca : MonoBehaviour
     {
         GameObject aBase = GameObject.Find("Terrain");
         euMesmo = aBase.GetComponent<levelgenerator>().tempPessoas[0];
-        Debug.Log("CRIANCA-START: eu crianca" );
-//        Debug.Log("eu crianca" + this.transform.position);
+        Debug.Log("CRIANCA-START: eu crianca");
+        //        Debug.Log("eu crianca" + this.transform.position);
         //            tempPessoa[0];
         GetComponent<levelgenerator>().tempPessoas.RemoveAt(0);
         /*

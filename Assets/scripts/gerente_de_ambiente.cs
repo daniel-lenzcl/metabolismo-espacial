@@ -1,12 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.Events;
 
 public class Gerente_de_ambiente : MonoBehaviour
 {
+    [SerializeField] private GerenteUI gerenteUI;
+    public GerentePessoas gerentePessoas;
+    public gestor_populacao gestor_Pop;
+    //    public GerentePredios;
     public UnityEvent OnPrediosCarregados = new UnityEvent();
 
     public List<molde_pessoas> lista_tipos_pessoas = new List<molde_pessoas>();
@@ -21,6 +23,11 @@ public class Gerente_de_ambiente : MonoBehaviour
     public int Total_Pessoas = 0;
     public List<cPessoa> todas_as_pessoas;
     public List<CamadaInfo> todas_as_camadas;
+
+    private void Awake()
+    {
+        gerenteUI.OnBotaoPopularClick += ChamaPopular;
+    }
 
     void OnEnable()
     {
@@ -60,6 +67,14 @@ public class Gerente_de_ambiente : MonoBehaviour
 
     void Update() { }
 
+    void ChamaPopular()
+    {
+        gestor_Pop = GetComponent<gestor_populacao>();
+        gestor_Pop.popular();
+        DebugController.Log(DebugCategoria.GerenteAmbiente, "ChamaPopular ▸ iniciando processo de popular pessoas");
+//        Total_Pessoas = gerentePessoas.PopularPessoas(lista_tipos_pessoas, lista_dos_predios);
+//        DebugController.Log(DebugCategoria.GerenteAmbiente, $"Total de pessoas populadas: {Total_Pessoas}");
+    }
     private void Atualizar_lista(molde_pessoas pessoatemp)
     {
         DebugController.Log(DebugCategoria.GerenteAmbiente, $"Atualizando ambiente tipo: {pessoatemp.tipo_pessoa}");
@@ -90,6 +105,15 @@ public class Gerente_de_ambiente : MonoBehaviour
 
     void inicializar_pessoas()
     {
+        gerentePessoas.InicializarTemplatesBase();
+
+        var demografia = new Dictionary<string, int>
+        {
+            { "operario", 80 },
+            { "cozinheiro", 20 }
+        };
+        gerentePessoas.DefinirQuantidadePorTemplate(demografia);
+
         molde_pessoas operario = new molde_pessoas("operario");
         operario.atv_08_10 = "trabalho";
         operario.atv_10_12 = "trabalho";

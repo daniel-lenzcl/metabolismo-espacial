@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class botao_dia : MonoBehaviour
@@ -11,13 +9,13 @@ public class botao_dia : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void mudaNome()
@@ -26,7 +24,8 @@ public class botao_dia : MonoBehaviour
         if (comecaDia)
         {
             nomeBotao.text = "dia rolando";
-        } else
+        }
+        else
         {
             nomeBotao.text = "começar dia";
         }

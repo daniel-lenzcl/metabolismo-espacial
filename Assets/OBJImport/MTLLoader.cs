@@ -17,8 +17,9 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class MTLLoader {
-    public List<string> SearchPaths = new List<string>() { "%FileName%_Textures", string.Empty};
+public class MTLLoader
+{
+    public List<string> SearchPaths = new List<string>() { "%FileName%_Textures", string.Empty };
 
     private FileInfo _objFileInfo = null;
 
@@ -76,7 +77,7 @@ public class MTLLoader {
         foreach (var searchPath in SearchPaths)
         {
             //replace varaibles and combine path
-            string processedPath = (_objFileInfo != null) ? searchPath.Replace("%FileName%", Path.GetFileNameWithoutExtension(_objFileInfo.Name)) 
+            string processedPath = (_objFileInfo != null) ? searchPath.Replace("%FileName%", Path.GetFileNameWithoutExtension(_objFileInfo.Name))
                                                           : searchPath;
             string filePath = Path.Combine(processedPath, path);
 
@@ -85,7 +86,7 @@ public class MTLLoader {
             {
                 var tex = ImageLoader.LoadTexture(filePath);
 
-                if(isNormalMap)
+                if (isNormalMap)
                     tex = ImageUtils.ConvertToNormalMap(tex);
 
                 return tex;
@@ -104,7 +105,7 @@ public class MTLLoader {
 
         return TextureLoadFunction(texturePath, normalMap);
     }
-    
+
     private int GetArgValueCount(string arg)
     {
         switch (arg)
@@ -128,10 +129,10 @@ public class MTLLoader {
 
     private int GetTexNameIndex(string[] components)
     {
-        for(int i=1; i < components.Length; i++)
+        for (int i = 1; i < components.Length; i++)
         {
             var cmpSkip = GetArgValueCount(components[i]);
-            if(cmpSkip < 0)
+            if (cmpSkip < 0)
             {
                 return i;
             }
@@ -143,12 +144,12 @@ public class MTLLoader {
     private float GetArgValue(string[] components, string arg, float fallback = 1f)
     {
         string argLower = arg.ToLower();
-        for(int i=1; i < components.Length - 1; i++)
+        for (int i = 1; i < components.Length - 1; i++)
         {
             var cmp = components[i].ToLower();
-            if(argLower == cmp)
+            if (argLower == cmp)
             {
-                return OBJLoaderHelper.FastFloatParse(components[i+1]);
+                return OBJLoaderHelper.FastFloatParse(components[i + 1]);
             }
         }
         return fallback;
@@ -157,7 +158,7 @@ public class MTLLoader {
     private string GetTexPathFromMapStatement(string processedLine, string[] splitLine)
     {
         int texNameCmpIdx = GetTexNameIndex(splitLine);
-        if(texNameCmpIdx < 0)
+        if (texNameCmpIdx < 0)
         {
             Debug.LogError($"texNameCmpIdx < 0 on line {processedLine}. Texture not loaded.");
             return null;
@@ -224,7 +225,7 @@ public class MTLLoader {
             if (splitLine[0] == "map_Kd" || splitLine[0] == "map_kd")
             {
                 string texturePath = GetTexPathFromMapStatement(processedLine, splitLine);
-                if(texturePath == null)
+                if (texturePath == null)
                 {
                     continue; //invalid args or sth
                 }
@@ -233,13 +234,13 @@ public class MTLLoader {
                 currentMaterial.SetTexture("_MainTex", KdTexture);
 
                 //set transparent mode if the texture has transparency
-                if(KdTexture != null && (KdTexture.format == TextureFormat.DXT5 || KdTexture.format == TextureFormat.ARGB32))
+                if (KdTexture != null && (KdTexture.format == TextureFormat.DXT5 || KdTexture.format == TextureFormat.ARGB32))
                 {
                     OBJLoaderHelper.EnableMaterialTransparency(currentMaterial);
                 }
 
                 //flip texture if this is a dds
-                if(Path.GetExtension(texturePath).ToLower() == ".dds")
+                if (Path.GetExtension(texturePath).ToLower() == ".dds")
                 {
                     currentMaterial.mainTextureScale = new Vector2(1f, -1f);
                 }
@@ -251,7 +252,7 @@ public class MTLLoader {
             if (splitLine[0] == "map_Bump" || splitLine[0] == "map_bump")
             {
                 string texturePath = GetTexPathFromMapStatement(processedLine, splitLine);
-                if(texturePath == null)
+                if (texturePath == null)
                 {
                     continue; //invalid args or sth
                 }
@@ -259,7 +260,8 @@ public class MTLLoader {
                 var bumpTexture = TryLoadTexture(texturePath, true);
                 float bumpScale = GetArgValue(splitLine, "-bm", 1.0f);
 
-                if (bumpTexture != null) {
+                if (bumpTexture != null)
+                {
                     currentMaterial.SetTexture("_BumpMap", bumpTexture);
                     currentMaterial.SetFloat("_BumpScale", bumpScale);
                     currentMaterial.EnableKeyword("_NORMALMAP");
@@ -287,7 +289,7 @@ public class MTLLoader {
             if (splitLine[0] == "map_Ka" || splitLine[0] == "map_ka")
             {
                 string texturePath = GetTexPathFromMapStatement(processedLine, splitLine);
-                if(texturePath == null)
+                if (texturePath == null)
                 {
                     continue; //invalid args or sth
                 }
@@ -300,12 +302,12 @@ public class MTLLoader {
             if (splitLine[0] == "d" || splitLine[0] == "Tr")
             {
                 float visibility = OBJLoaderHelper.FastFloatParse(splitLine[1]);
-                
-                //tr statement is just d inverted
-                if(splitLine[0] == "Tr")
-                    visibility = 1f - visibility;  
 
-                if(visibility < (1f - Mathf.Epsilon))
+                //tr statement is just d inverted
+                if (splitLine[0] == "Tr")
+                    visibility = 1f - visibility;
+
+                if (visibility < (1f - Mathf.Epsilon))
                 {
                     var currentColor = currentMaterial.GetColor("_Color");
 
@@ -344,6 +346,6 @@ public class MTLLoader {
         {
             return Load(fs); //actually load
         }
-        
+
     }
 }

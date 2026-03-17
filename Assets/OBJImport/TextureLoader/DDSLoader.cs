@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEngine;
 
 namespace Dummiesman
@@ -18,7 +15,7 @@ namespace Dummiesman
 
         public static Texture2D Load(string ddsPath)
         {
-           return Load(File.ReadAllBytes(ddsPath));
+            return Load(File.ReadAllBytes(ddsPath));
         }
 
         public static Texture2D Load(byte[] ddsBytes)

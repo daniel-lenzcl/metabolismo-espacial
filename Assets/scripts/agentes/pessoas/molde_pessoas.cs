@@ -1,7 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
+
+//SUBSTITUINDO POR TEMPLATEPESSOA
 [System.Serializable]
 public class molde_pessoas
 {

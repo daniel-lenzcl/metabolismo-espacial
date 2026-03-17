@@ -1,8 +1,8 @@
 ﻿//----------------------------------------------
 // ControleCamera.cs (fix: centralizar mantém controles ativos) funfando
 //----------------------------------------------
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
 public class ControleCamera : MonoBehaviour

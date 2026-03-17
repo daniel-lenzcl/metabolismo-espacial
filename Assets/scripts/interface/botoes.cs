@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class botoes : MonoBehaviour
 {
@@ -85,7 +83,7 @@ public class botoes : MonoBehaviour
         // fim configurando botao de redes
     }
 
-        void Update() { }
+    void Update() { }
 
     // ------------------------ UI Callbacks ------------------------ 
     public void botaDia()
@@ -177,49 +175,49 @@ public class botoes : MonoBehaviour
 
 }
 
-    /*
-    public void botaoMapaAleatorio()
+/*
+public void botaoMapaAleatorio()
+{
+    GameObject.Find("Terrain").GetComponent<levelgenerator>().iniciaMapa();
+    GameObject.Find("Terrain").GetComponent<levelgenerator>().mapaAleatorio();
+    GameObject.Find("Terrain").GetComponent<levelgenerator>().colocaPessoas();
+}
+*/
+
+/*
+    public void botaoMapaMatriz()
     {
         GameObject.Find("Terrain").GetComponent<levelgenerator>().iniciaMapa();
-        GameObject.Find("Terrain").GetComponent<levelgenerator>().mapaAleatorio();
+        GameObject.Find("Terrain").GetComponent<levelgenerator>().mapaMatriz();
+        GameObject.Find("Terrain").GetComponent<levelgenerator>().colocaPessoas();
+
+    }
+*/
+
+/*
+    public void botaoMapaLinha()
+    {
+        GameObject.Find("Terrain").GetComponent<levelgenerator>().iniciaMapa();
+        GameObject.Find("Terrain").GetComponent<levelgenerator>().mapaLinha();
         GameObject.Find("Terrain").GetComponent<levelgenerator>().colocaPessoas();
     }
 */
 
-    /*
-        public void botaoMapaMatriz()
-        {
-            GameObject.Find("Terrain").GetComponent<levelgenerator>().iniciaMapa();
-            GameObject.Find("Terrain").GetComponent<levelgenerator>().mapaMatriz();
-            GameObject.Find("Terrain").GetComponent<levelgenerator>().colocaPessoas();
+/*
+    public void botaoMapaCirculo()
+    {
+        GameObject.Find("Terrain").GetComponent<levelgenerator>().iniciaMapa();
+        GameObject.Find("Terrain").GetComponent<levelgenerator>().mapaCirculo();
+        GameObject.Find("Terrain").GetComponent<levelgenerator>().colocaPessoas();
+    }
+*/
 
-        }
-    */
-
-    /*
-        public void botaoMapaLinha()
-        {
-            GameObject.Find("Terrain").GetComponent<levelgenerator>().iniciaMapa();
-            GameObject.Find("Terrain").GetComponent<levelgenerator>().mapaLinha();
-            GameObject.Find("Terrain").GetComponent<levelgenerator>().colocaPessoas();
-        }
-    */
-
-    /*
-        public void botaoMapaCirculo()
-        {
-            GameObject.Find("Terrain").GetComponent<levelgenerator>().iniciaMapa();
-            GameObject.Find("Terrain").GetComponent<levelgenerator>().mapaCirculo();
-            GameObject.Find("Terrain").GetComponent<levelgenerator>().colocaPessoas();
-        }
-    */
-
-    /*
-        public void botaoMapaCruz()
-        {
-            GameObject.Find("Terrain").GetComponent<levelgenerator>().iniciaMapa();
-            GameObject.Find("Terrain").GetComponent<levelgenerator>().mapaCruz();
-            GameObject.Find("Terrain").GetComponent<levelgenerator>().colocaPessoas();
-        }
-    */
+/*
+    public void botaoMapaCruz()
+    {
+        GameObject.Find("Terrain").GetComponent<levelgenerator>().iniciaMapa();
+        GameObject.Find("Terrain").GetComponent<levelgenerator>().mapaCruz();
+        GameObject.Find("Terrain").GetComponent<levelgenerator>().colocaPessoas();
+    }
+*/
 

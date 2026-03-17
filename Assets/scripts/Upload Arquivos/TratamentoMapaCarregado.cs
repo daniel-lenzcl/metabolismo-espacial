@@ -1,9 +1,9 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
-using UnityEngine.Events;
+﻿using System;
 using System.Collections;
-using System;
+using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// VERSÃO: garante que todas as meshes fiquem voltadas para CIMA (+Y)

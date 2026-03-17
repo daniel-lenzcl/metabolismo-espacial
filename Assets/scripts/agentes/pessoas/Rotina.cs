@@ -4,23 +4,23 @@ using UnityEngine.AI;
 
 public class Rotina : MonoBehaviour
 {
-    public cPessoa pessoa; // referência a cPessoa
+    private HashSet<int> minutosAlarmeRegistrados = new HashSet<int>();
+
+    public cPessoa pessoa;
     private NavMeshAgent agente;
     private horas relogio;
-    private float hora_instantanea;
+    private float hora_instantanea; // LEGADO
 
-    // Cache simples de caminhos (key baseado em posições com arredondamento)
+    // LEGADO: não usado na versão atual
     private Dictionary<string, NavMeshPath> pathCache = new Dictionary<string, NavMeshPath>();
 
-    // limites para velocidade do agente (m/s)
+
     const float MIN_SPEED = 0.5f;
-    // aumentei MAX_SPEED para permitir velocidades reais suficientes para chegar em 1h simulada
     const float MAX_SPEED = 30f;
 
-    // Estado atual para evitar recalcular sem necessidade
     private string currentActivityId = null;
     private Vector3 currentDestination = Vector3.zero;
-    private const float destinationTolerance = 1.0f; // metros
+    private const float destinationTolerance = 1.0f;
 
     // Sequência de atividades ordenada (respeitando wrap) com destino e caminho pré-calculado para o próximo
     private class SequenceEntry
@@ -34,19 +34,21 @@ public class Rotina : MonoBehaviour
         public int horaFim;
     }
     private List<SequenceEntry> sequence = new List<SequenceEntry>();
+    // LEGADO: sequência antiga (não usada)
+    //private List<object> sequence = new List<object>();
 
-    // Precomputed next path (prepared when agent arrives at current activity)
+    // LEGADO: cache de próxima rota (não usado)
     private NavMeshPath cachedNextPath = null;
     private Vector3 cachedNextDestination = Vector3.zero;
     private string cachedNextActivityId = null;
     private bool nextPathReady = false;
 
-    // Arrival tracking
     private bool hasArrived = false;
 
     void Awake()
     {
         DebugController.Log(DebugCategoria.tracking, $"Awake ▸ tracking");
+
         agente = GetComponent<NavMeshAgent>();
         if (agente == null)
         {
@@ -55,11 +57,11 @@ public class Rotina : MonoBehaviour
         }
 
         // parâmetros razoáveis (ajuste conforme necessário)
-        agente.speed = 3.5f;
-        agente.acceleration = 8f;
-        agente.angularSpeed = 360f; // aumentei angularSpeed base para permitir curvas mais rápidas
-        agente.radius = 0.3f;
-        agente.stoppingDistance = 1.2f;
+        agente.speed = 16f;
+        agente.acceleration = 38f;
+        agente.angularSpeed = 760f; // aumentei angularSpeed base para permitir curvas mais rápidas
+        agente.radius = 0.25f;
+        agente.stoppingDistance = 0.8f;
         agente.autoBraking = true;
         agente.updateRotation = true;
 
@@ -79,16 +81,19 @@ public class Rotina : MonoBehaviour
         relogio = FindObjectOfType<horas>();
 
         // monta sequência de atividades (ordenando considerando wrap pela meia-noite) e pré-calcula caminhos t_i -> t_{i+1}
-        BuildSequenceRespectingWrap();
+        // LEGADO
+        // BuildSequenceRespectingWrap();
 
         // Se relógio existe, liga listener e posiciona agente na tarefa ativa no horário inicial (o relógio começa em 00:00)
         if (relogio != null)
         {
-            relogio.MudouHora.AddListener(AtualizaDestino);
+            //            relogio.MudouHora.AddListener(AtualizaDestino);
+            RegistrarAlarmesDaRotina();
 
             // hora atual do relógio (padrão 0 se por acaso inválido)
-            int horaInicio = Mathf.FloorToInt((float)relogio.hora) % 24;
-            MoveAgentToTaskForHour(horaInicio);
+            //            int horaInicio = Mathf.FloorToInt(relogio.hora) % 24;
+            //            MoveAgentToTaskForHour(horaInicio);
+            MoveAgentToTaskInicial(); // MoveAgentToTaskForMinute(relogio.minutoDoDia);
 
             // opcional: chama para garantir que a lógica de destino seja aplicada conforme hora atual
             AtualizaDestino();
@@ -97,12 +102,15 @@ public class Rotina : MonoBehaviour
         {
             DebugController.LogWarning(DebugCategoria.Rotina, "Relógio (horas) não encontrado na cena. Posicionando com base em 00:00.");
             // assume 00h se não há relógio
-            MoveAgentToTaskForHour(0);
+            //            MoveAgentToTaskForHour(0);
+            MoveAgentToTaskInicial(); // MoveAgentToTaskForMinute(0);
         }
     }
 
+
     void Update()
     {
+        /*
         // Checa chegada ao destino para preparar rota da próxima atividade (pré-cálculo)
         if (agente != null && agente.isOnNavMesh)
         {
@@ -113,7 +121,7 @@ public class Rotina : MonoBehaviour
                     // marcou chegada
                     hasArrived = true;
                     DebugController.Log(DebugCategoria.Rotina, $"Update ▸ {pessoa?.identidade} chegou ao destino '{currentActivityId}' → preparando próxima rota.");
-                    PrepareNextPath();
+                 //   PrepareNextPath();
                 }
                 else if (hasArrived && agente.remainingDistance > agente.stoppingDistance + destinationTolerance)
                 {
@@ -122,6 +130,259 @@ public class Rotina : MonoBehaviour
                 }
             }
         }
+        */
+    }
+
+    private void RegistrarAlarmesDaRotina()
+    {
+        if (relogio == null)
+        {
+            DebugController.LogWarning(DebugCategoria.Rotina, "RegistrarAlarmesDaRotina ▸ relógio não encontrado.");
+            return;
+        }
+
+        if (pessoa == null || pessoa.minhaRotinaBase == null || pessoa.minhaRotinaBase.slots == null || pessoa.minhaRotinaBase.slots.Count == 0)
+        {
+            DebugController.LogWarning(DebugCategoria.Rotina, $"RegistrarAlarmesDaRotina ▸ rotina base ausente para {pessoa?.identidade}.");
+            return;
+        }
+
+        minutosAlarmeRegistrados.Clear();
+
+        foreach (var slot in pessoa.minhaRotinaBase.slots)
+        {
+            int minuto = ((slot.inicioMin % 1440) + 1440) % 1440;
+
+            if (minutosAlarmeRegistrados.Add(minuto))
+            {
+                relogio.RegistrarEventoNoMinuto(minuto, AoDispararAlarmeDeRotina);
+                DebugController.Log(DebugCategoria.Rotina,
+                    $"RegistrarAlarmesDaRotina ▸ {pessoa.identidade} inscrito no minuto {minuto}.");
+            }
+        }
+    }
+
+    private void LimparAlarmesDaRotina()
+    {
+        if (relogio == null) return;
+
+        foreach (int minuto in minutosAlarmeRegistrados)
+        {
+            relogio.RemoverEventoNoMinuto(minuto, AoDispararAlarmeDeRotina);
+        }
+
+        minutosAlarmeRegistrados.Clear();
+    }
+
+    private void AoDispararAlarmeDeRotina()
+    {
+        DebugController.Log(DebugCategoria.Rotina, $"AoDispararAlarmeDeRotina ▸ alarme disparado para {pessoa.identidade} no minuto {relogio.minutoDoDia}.");
+        AtualizaDestino();
+    }
+
+    // ===============================
+    //  SLOT ATIVO
+    // ===============================
+    private bool GetSlotAtivo(int minuto, out RotinaSlot slot)
+    {
+        slot = default;
+
+        if (pessoa?.minhaRotinaBase?.slots == null) return false;
+
+        minuto = ((minuto % 1440) + 1440) % 1440;
+
+        foreach (var s in pessoa.minhaRotinaBase.slots)
+        {
+            if (s.inicioMin <= minuto && minuto < s.fimMin)
+            {
+                slot = s;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // ===============================
+    //  POSICIONAMENTO INICIAL
+    // ===============================
+    private void MoveAgentToTaskInicial()
+    {
+        if (relogio == null) return;
+
+        if (!GetSlotAtivo(relogio.minutoDoDia, out RotinaSlot slot))
+            return;
+
+        var pred = ResolvePredio(slot.tipoLugarId);
+        if (pred == null) return;
+
+        Vector3 destino = pred.enderecoXYZ;
+
+        if (NavMesh.SamplePosition(destino, out var hit, 10f, NavMesh.AllAreas))
+            destino = hit.position;
+
+        agente.Warp(destino);
+        agente.ResetPath();
+
+        currentActivityId = slot.tipoLugarId;
+        currentDestination = destino;
+        hasArrived = true;
+    }
+
+    // ===============================
+    //  ATUALIZA DESTINO
+    // ===============================
+    // Atualiza destino com base na hora do relógio e nas tarefas da pessoa
+    private void AtualizaDestino()
+    {
+        if (pessoa == null)
+        {
+            DebugController.LogWarning(DebugCategoria.Rotina, "AtualizaDestino ▸ pessoa não atribuída ao componente Rotina.");
+            return;
+        }
+
+        if (relogio == null)
+        {
+            DebugController.LogWarning(DebugCategoria.Rotina, "AtualizaDestino ▸ relógio não encontrado.");
+            return;
+        }
+
+        // Checa se estamos rodando o dia; se não, não altera destino
+        if (!relogio.rodadia)
+        {
+            DebugController.Log(DebugCategoria.Rotina, $"AtualizaDestino ▸ rodadia == false, pulando atualização para {pessoa.identidade}");
+            return;
+        }
+
+//        hora_instantanea = relogio.hora;
+//        int horaInt = Mathf.FloorToInt(hora_instantanea) % 24;
+        int minutoAtual = relogio.minutoDoDia;
+
+        //var tarefa = GetTarefaAtivaPorMinuto(relogio.minutoDoDia);
+        //if (tarefa == null)
+        //{ DebugController.LogWarning(DebugCategoria.Rotina, $"AtualizaDestino ▸ nenhuma tarefa encontrada para {pessoa.identidade} às {horaInt}h.");
+        //  return;}
+        if (!GetSlotAtivo(relogio.minutoDoDia, out RotinaSlot slot))
+            return;
+
+        //string newActivityId = tarefa.atividadeId;
+        //var predDestino = ResolvePredioParaTarefa(tarefa);
+        //if (predDestino == null)
+        //{ DebugController.LogWarning(DebugCategoria.Rotina, $"AtualizaDestino ▸ nenhum prédio encontrado para atividade '{tarefa.atividadeId}' de {pessoa.identidade}.");
+        //  return; }
+        string newActivityId = slot.tipoLugarId;
+
+        var pred = ResolvePredio(newActivityId);
+        if (pred == null) return;
+
+        Vector3 destinoPos = pred.enderecoXYZ;// predDestino.enderecoXYZ;
+        if (NavMesh.SamplePosition(destinoPos, out var hitTo, 10.0f, NavMesh.AllAreas))
+            destinoPos = hitTo.position;
+
+        DebugController.Log(DebugCategoria.Rotina, $"AtualizaDestino ▸ {pessoa.identidade} hora {relogio.minutoDoDia} → atividade '{newActivityId}' no '{pred.nomePredio}'");
+
+        // Se a nova atividade é a mesma que a atual e o destino também, não altera
+        //        if (!string.IsNullOrEmpty(currentActivityId) && currentActivityId == newActivityId &&
+        //            (currentDestination - destinoPos).sqrMagnitude <= (destinationTolerance * destinationTolerance))
+        //        {   DebugController.Log(DebugCategoria.Rotina, $"AtualizaDestino ▸ atividade inalterada para {pessoa.identidade} ('{currentActivityId}'), pulando.");
+        //            return;        }
+        bool mesmoDestino = (currentDestination - destinoPos).sqrMagnitude <= (destinationTolerance * destinationTolerance);
+        bool mesmaAtividade = currentActivityId == newActivityId;
+        if (mesmaAtividade && mesmoDestino) return;
+
+        /*
+        // Se agente está a caminho (ainda longe do destino), não forçar mudança agora — espera chegada.
+//        if (agente != null && agente.hasPath && !agente.pathPending && agente.remainingDistance > agente.stoppingDistance + destinationTolerance)
+//        {            DebugController.Log(DebugCategoria.Rotina, $"AtualizaDestino ▸ {pessoa.identidade} está em trânsito (remaining {agente.remainingDistance:F2}m) — adiando troca para chegada.");
+//            return;        }
+
+        // Se existe cached next path e corresponde à nova atividade, use-a
+ //       if (nextPathReady && cachedNextActivityId == newActivityId)
+ //       {
+            // configure agent parameters for cached path before applying
+            //       ConfigureAgentForTurning(cachedNextPath, agente.speed);
+            //       agente.SetPath(cachedNextPath);
+            //       currentActivityId = newActivityId;
+            //       currentDestination = cachedNextDestination;
+            //       nextPathReady = false;
+            //       cachedNextPath = null;
+            //       hasArrived = false;
+            //       DebugController.Log(DebugCategoria.Rotina, $"AtualizaDestino ▸ Usando cachedNextPath para {pessoa.identidade} → {currentActivityId}");
+ //           return;
+ //       }
+ */
+        // Caso contrário calcula caminho agora e aplica
+        // garante que agente esteja sobre NavMesh (warp se necessário)
+        if (!agente.isOnNavMesh)
+        {
+        //    NavMeshHit sample;
+            if (NavMesh.SamplePosition(transform.position, out NavMeshHit sample, 2f, NavMesh.AllAreas))
+            {
+                agente.Warp(sample.position);
+            }
+//            else
+//            {
+//                if (NavMesh.SamplePosition(destinoPos, out var s2, 10f, NavMesh.AllAreas))
+ //                   agente.Warp(s2.position);
+ //           }
+        }
+
+        agente.SetDestination(destinoPos);
+
+        currentActivityId = newActivityId;
+        currentDestination = destinoPos;
+        hasArrived = false;
+
+        /*
+        var pathNow = new NavMeshPath();
+        bool ok = agente.CalculatePath(destinoPos, pathNow);
+        AjustarVelocidadeParaChegarRapido(pathNow, agente.transform.position, destinoPos, tarefa);
+
+        if (ok && pathNow.status == NavMeshPathStatus.PathComplete)
+        {
+            // configure agent params for this path (curvatura) antes de aplicar
+            ConfigureAgentForTurning(pathNow, agente.speed);
+            agente.SetPath(pathNow);
+            currentActivityId = newActivityId;
+            currentDestination = destinoPos;
+            hasArrived = false;
+            nextPathReady = false;
+            cachedNextPath = null;
+            DebugController.Log(DebugCategoria.Rotina, $"AtualizaDestino ▸ path calculado e aplicado para {pessoa.identidade} → {currentActivityId}");
+        }
+        else
+        {
+            // fallback sem path completo: ainda aplique ajuste simples
+            ConfigureAgentForTurning(null, agente.speed);
+            agente.SetDestination(destinoPos);
+            currentActivityId = newActivityId;
+            currentDestination = destinoPos;
+            hasArrived = false;
+            nextPathReady = false;
+            cachedNextPath = null;
+            DebugController.LogWarning(DebugCategoria.Rotina, $"AtualizaDestino ▸ SetDestination aplicado (fallback) para {pessoa.identidade} → {currentActivityId}");
+        } */
+    }
+
+    // ===============================
+    //  RESOLVE PRÉDIO
+    // ===============================
+    private mPredios ResolvePredio(string atividadeKey)
+    {
+        if (string.IsNullOrEmpty(atividadeKey)) return null;
+
+        if (pessoa.EnderecosPorCamada.TryGetValue(atividadeKey, out var pred) && pred != null)
+            return pred;
+
+        var env = pessoa.ambiente;
+
+        if (env?.mCamadas != null)
+        {
+            if (env.mCamadas.TryGetValue(atividadeKey, out var lista) && lista.Count > 0)
+                return lista[0];
+        }
+
+        return null;
     }
 
     // CONSTRUÇÃO DA SEQUÊNCIA: ordena por horaInicio e rotaciona para começar pela tarefa que contém 00:00 (se houver)
@@ -194,6 +455,7 @@ public class Rotina : MonoBehaviour
 
     // Move / posiciona o agente para a tarefa que corresponde à hora fornecida.
     // Preferência: evita cálculos caros — warpa o agente para a posição correta no Start.
+    //VELHA, VAI SER DESCONTINUADA
     private void MoveAgentToTaskForHour(int hora)
     {
         if (sequence == null || sequence.Count == 0) return;
@@ -233,8 +495,41 @@ public class Rotina : MonoBehaviour
         currentDestination = destino;
         hasArrived = true;
     }
+ 
+    // NOVA MoveAgentToTask, baseada em minuto e na nova estrutura de rotina (minhaRotinaBase.slots)
+    private void MoveAgentToTaskForMinute(int minuto)
+    {
+        var tarefa = GetTarefaAtivaPorMinuto(minuto);
+        if (tarefa == null) return;
 
-    // Determina a tarefa ativa para a hora atual (mantive para compatibilidade)
+        var predDestino = ResolvePredioParaTarefa(tarefa);
+        if (predDestino == null) return;
+
+        Vector3 destino = predDestino.enderecoXYZ;
+
+        if (NavMesh.SamplePosition(destino, out var sample, 10f, NavMesh.AllAreas))
+            destino = sample.position;
+
+        bool needWarp = true;
+        if (agente != null && agente.isOnNavMesh)
+        {
+            float distSqr = (agente.transform.position - destino).sqrMagnitude;
+            if (distSqr <= (destinationTolerance * destinationTolerance))
+                needWarp = false;
+        }
+
+        if (needWarp && agente != null)
+        {
+            agente.Warp(destino);
+            agente.ResetPath();
+        }
+
+        currentActivityId = tarefa.atividadeId;
+        currentDestination = destino;
+        hasArrived = true;
+    }
+
+    // Determina a tarefa ativa para a hora atual  VAI SER DESCONTINUADA (mantive para compatibilidade)
     private TarefaRotina GetTarefaAtiva(int hora)
     {
         if (pessoa == null || pessoa.rotinaListaTarefa == null || pessoa.rotinaListaTarefa.Count == 0)
@@ -248,7 +543,29 @@ public class Rotina : MonoBehaviour
         // fallback: retorna a primeira
         return pessoa.rotinaListaTarefa.Count > 0 ? pessoa.rotinaListaTarefa[0] : null;
     }
+    //NOVA GERTAREFA
+    private TarefaRotina GetTarefaAtivaPorMinuto(int minuto)
+    {
+        if (pessoa == null || pessoa.minhaRotinaBase == null || pessoa.minhaRotinaBase.slots == null || pessoa.minhaRotinaBase.slots.Count == 0)
+            return null;
 
+        minuto = ((minuto % 1440) + 1440) % 1440;
+
+        foreach (var slot in pessoa.minhaRotinaBase.slots)
+        {
+            if (slot.inicioMin <= minuto && minuto < slot.fimMin)
+            {
+                return new TarefaRotina
+                {
+                    horaInicio = slot.inicioMin,
+                    horaFim = slot.fimMin,
+                    atividadeId = slot.tipoLugarId
+                };
+            }
+        }
+
+        return null;
+    }
     // resolve mPredios para uma atividade (tentando fallback quando necessário)
     private mPredios ResolvePredioParaTarefa(TarefaRotina tarefa)
     {
@@ -519,131 +836,12 @@ public class Rotina : MonoBehaviour
         }
     }
 
-    // Atualiza destino com base na hora do relógio e nas tarefas da pessoa
-    private void AtualizaDestino()
-    {
-        if (pessoa == null)
-        {
-            DebugController.LogWarning(DebugCategoria.Rotina, "AtualizaDestino ▸ pessoa não atribuída ao componente Rotina.");
-            return;
-        }
 
-        if (relogio == null)
-        {
-            DebugController.LogWarning(DebugCategoria.Rotina, "AtualizaDestino ▸ relógio não encontrado.");
-            return;
-        }
-
-        // Checa se estamos rodando o dia; se não, não altera destino
-        if (!relogio.rodadia)
-        {
-            DebugController.Log(DebugCategoria.Rotina, $"AtualizaDestino ▸ rodadia == false, pulando atualização para {pessoa.identidade}");
-            return;
-        }
-
-        hora_instantanea = relogio.hora;
-        int horaInt = Mathf.FloorToInt(hora_instantanea) % 24;
-
-        var tarefa = GetTarefaAtiva(horaInt);
-        if (tarefa == null)
-        {
-            DebugController.LogWarning(DebugCategoria.Rotina, $"AtualizaDestino ▸ nenhuma tarefa encontrada para {pessoa.identidade} às {horaInt}h.");
-            return;
-        }
-
-        string newActivityId = tarefa.atividadeId;
-        var predDestino = ResolvePredioParaTarefa(tarefa);
-        if (predDestino == null)
-        {
-            DebugController.LogWarning(DebugCategoria.Rotina, $"AtualizaDestino ▸ nenhum prédio encontrado para atividade '{tarefa.atividadeId}' de {pessoa.identidade}.");
-            return;
-        }
-
-        Vector3 destinoPos = predDestino.enderecoXYZ;
-        if (NavMesh.SamplePosition(destinoPos, out var hitTo, 10.0f, NavMesh.AllAreas))
-            destinoPos = hitTo.position;
-
-        DebugController.Log(DebugCategoria.Rotina, $"AtualizaDestino ▸ {pessoa.identidade} hora {horaInt} → atividade '{newActivityId}' no '{predDestino.nomePredio}'");
-
-        // Se a nova atividade é a mesma que a atual e o destino também, não altera
-        if (!string.IsNullOrEmpty(currentActivityId) && currentActivityId == newActivityId &&
-            (currentDestination - destinoPos).sqrMagnitude <= (destinationTolerance * destinationTolerance))
-        {
-            DebugController.Log(DebugCategoria.Rotina, $"AtualizaDestino ▸ atividade inalterada para {pessoa.identidade} ('{currentActivityId}'), pulando.");
-            return;
-        }
-
-        // Se agente está a caminho (ainda longe do destino), não forçar mudança agora — espera chegada.
-        if (agente != null && agente.hasPath && !agente.pathPending && agente.remainingDistance > agente.stoppingDistance + destinationTolerance)
-        {
-            DebugController.Log(DebugCategoria.Rotina, $"AtualizaDestino ▸ {pessoa.identidade} está em trânsito (remaining {agente.remainingDistance:F2}m) — adiando troca para chegada.");
-            return;
-        }
-
-        // Se existe cached next path e corresponde à nova atividade, use-a
-        if (nextPathReady && cachedNextActivityId == newActivityId)
-        {
-            // configure agent parameters for cached path before applying
-            ConfigureAgentForTurning(cachedNextPath, agente.speed);
-            agente.SetPath(cachedNextPath);
-            currentActivityId = newActivityId;
-            currentDestination = cachedNextDestination;
-            nextPathReady = false;
-            cachedNextPath = null;
-            hasArrived = false;
-            DebugController.Log(DebugCategoria.Rotina, $"AtualizaDestino ▸ Usando cachedNextPath para {pessoa.identidade} → {currentActivityId}");
-            return;
-        }
-
-        // Caso contrário calcula caminho agora e aplica
-        // garante que agente esteja sobre NavMesh (warp se necessário)
-        if (!agente.isOnNavMesh)
-        {
-            NavMeshHit sample;
-            if (NavMesh.SamplePosition(transform.position, out sample, 2f, NavMesh.AllAreas))
-            {
-                agente.Warp(sample.position);
-            }
-            else
-            {
-                if (NavMesh.SamplePosition(destinoPos, out var s2, 10f, NavMesh.AllAreas))
-                    agente.Warp(s2.position);
-            }
-        }
-
-        var pathNow = new NavMeshPath();
-        bool ok = agente.CalculatePath(destinoPos, pathNow);
-        AjustarVelocidadeParaChegarRapido(pathNow, agente.transform.position, destinoPos, tarefa);
-
-        if (ok && pathNow.status == NavMeshPathStatus.PathComplete)
-        {
-            // configure agent params for this path (curvatura) antes de aplicar
-            ConfigureAgentForTurning(pathNow, agente.speed);
-            agente.SetPath(pathNow);
-            currentActivityId = newActivityId;
-            currentDestination = destinoPos;
-            hasArrived = false;
-            nextPathReady = false;
-            cachedNextPath = null;
-            DebugController.Log(DebugCategoria.Rotina, $"AtualizaDestino ▸ path calculado e aplicado para {pessoa.identidade} → {currentActivityId}");
-        }
-        else
-        {
-            // fallback sem path completo: ainda aplique ajuste simples
-            ConfigureAgentForTurning(null, agente.speed);
-            agente.SetDestination(destinoPos);
-            currentActivityId = newActivityId;
-            currentDestination = destinoPos;
-            hasArrived = false;
-            nextPathReady = false;
-            cachedNextPath = null;
-            DebugController.LogWarning(DebugCategoria.Rotina, $"AtualizaDestino ▸ SetDestination aplicado (fallback) para {pessoa.identidade} → {currentActivityId}");
-        }
-    }
 
     public void OnDestroy()
     {
         DebugController.Log(DebugCategoria.tracking, $"OnDestroy ▸ tracking");
+        LimparAlarmesDaRotina();
         if (pessoa != null) pessoa.despedida();
     }
 }

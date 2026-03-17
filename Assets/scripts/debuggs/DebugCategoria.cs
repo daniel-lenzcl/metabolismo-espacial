@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum DebugCategoria { tracking, TratamentoMapaCarregado, GestorPopulacao, Mapas, 
-                             ControleCamera, Horas, 
-                             mPredios, cPessoa, Rotina, conectados, ParaConectar, CaminhoTrail,
-                             Simulacao, CarregarMapa , GerenteAmbiente, Botoes, Populacao, SalvarRedes,
-                             GerenteEncontros, BuildOptimizer, WebGLFileUploader,
+public enum DebugCategoria
+{
+    tracking, TratamentoMapaCarregado, GestorPopulacao, Mapas,
+    ControleCamera, Horas,
+    mPredios, cPessoa, Rotina, conectados, ParaConectar, CaminhoTrail,
+    Simulacao, CarregarMapa, GerenteAmbiente, Botoes, Populacao, SalvarRedes,
+    GerenteEncontros, BuildOptimizer, WebGLFileUploader,
     OBJLoaderHelper, DetectorTamanhoArquivo
 }
 
@@ -27,9 +29,9 @@ public static class DebugController
         //        DebugCategoria.GestorPopulacao,
         //        DebugCategoria.Mapas,
         //        DebugCategoria.ControleCamera,
-        //        DebugCategoria.Horas,
+                DebugCategoria.Horas,
         //        DebugCategoria.cPessoa,
-        //        DebugCategoria.Rotina,
+                DebugCategoria.Rotina,
         //        DebugCategoria.CarregarMapa,
         //        DebugCategoria.GerenteAmbiente,
         //        DebugCategoria.Botoes,
@@ -37,7 +39,7 @@ public static class DebugController
         //        DebugCategoria.BuildOptimizer,
         //        DebugCategoria.WebGLFileUploader
         //        debugCategoria.OBJLoaderHelper,
-//        DebugCategoria.DetectorTamanhoArquivo
+        //        DebugCategoria.DetectorTamanhoArquivo
 
         //  ✅ adicione outras categorias conforme necessário    
     };

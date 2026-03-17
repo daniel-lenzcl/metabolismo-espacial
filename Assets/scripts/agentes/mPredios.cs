@@ -1,5 +1,4 @@
 ﻿//csharp C:\Users\danie\OneDrive\posdoc - ufc\atividades\metabolismo espacial\Assets\scripts\agentes\mPredios.cs
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;

@@ -46,11 +46,9 @@
 * 
 *****/
 #endregion License and Information
-using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System;
+using UnityEngine;
 
 namespace B83.Image.BMP
 {
@@ -347,7 +345,7 @@ namespace B83.Image.BMP
             int yOffset = 0;
             while (aReader.BaseStream.Position < aReader.BaseStream.Length - 1)
             {
-                int count = (int)aReader.ReadByte();
+                int count = aReader.ReadByte();
                 byte d = aReader.ReadByte();
                 if (count > 0)
                 {
@@ -409,7 +407,7 @@ namespace B83.Image.BMP
             int yOffset = 0;
             while (aReader.BaseStream.Position < aReader.BaseStream.Length - 1)
             {
-                int count = (int)aReader.ReadByte();
+                int count = aReader.ReadByte();
                 byte d = aReader.ReadByte();
                 if (count > 0)
                 {

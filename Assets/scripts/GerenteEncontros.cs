@@ -57,26 +57,26 @@ public class GerenteEncontros : MonoBehaviour
         {
             // Desenha as instâncias de mesh (cilindro ou outro mesh) na posição armazenada nas matrizes
             Graphics.DrawMeshInstanced(marcadorMesh, 0, marcadorMaterial, marcadoresMatrices);
-//            Debug.Log($"atualizando marcadores, tamano da lista: {marcadoresMatrices.Count}");
+            //            Debug.Log($"atualizando marcadores, tamano da lista: {marcadoresMatrices.Count}");
         }
 
         // Tamanho desejado (ajustar conforme necessário)
- //       Vector3 tamanhoMarcador = new Vector3(2f, 20f, 2f); // Ajusta a escala para 2x em cada eixo
+        //       Vector3 tamanhoMarcador = new Vector3(2f, 20f, 2f); // Ajusta a escala para 2x em cada eixo
 
         // Cria a instância de mesh do marcador na posição do encontro com a escala ajustada
- //       Graphics.DrawMeshInstanced(marcadorMesh, 0, marcadorMaterial,
- //           new Matrix4x4[] { Matrix4x4.TRS(Vector3.zero, Quaternion.identity, tamanhoMarcador) }, 1, propertyBlock);
+        //       Graphics.DrawMeshInstanced(marcadorMesh, 0, marcadorMaterial,
+        //           new Matrix4x4[] { Matrix4x4.TRS(Vector3.zero, Quaternion.identity, tamanhoMarcador) }, 1, propertyBlock);
 
     }
     // Subscrição ao evento de encontro
     void OnEnable()
     {
-//        Paraconectar.OnEncontro += RegistrarEncontro;
+        //        Paraconectar.OnEncontro += RegistrarEncontro;
     }
 
     void OnDisable()
     {
- //       Paraconectar.OnEncontro -= RegistrarEncontro;
+        //       Paraconectar.OnEncontro -= RegistrarEncontro;
     }
     void OnGUI()
     {

@@ -16,7 +16,7 @@ public class CaminhoTrail : MonoBehaviour
 
     LineRenderer lr;
     readonly List<Vector3> pontos = new();
-    readonly List<double> tempos = new();         // tempoSimulado (dias + hora/24f)
+    readonly List<double> tempos = new();         // tempoSimulado (dia + hora/24f)
 
     // Novo dicionário para armazenar a quantidade de passagens por cada ponto
     private Dictionary<Vector3, int> passagensPorPonto = new();
@@ -60,7 +60,7 @@ public class CaminhoTrail : MonoBehaviour
     {
         if (relogio == null || !relogio.rodadia) return;  // pausa quando o “tempo” para
 
-        double tempoAgora = relogio.dias + relogio.hora / 24.0;
+        double tempoAgora = relogio.dia + relogio.hora / 24.0;
 
         Vector3 posAtual = transform.position;
 

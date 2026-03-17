@@ -1,18 +1,16 @@
-﻿
-using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class horasvelhas : MonoBehaviour
 {
-//    public Transform mexerhoras, mexerminuto, mexersegundo;
+    //    public Transform mexerhoras, mexerminuto, mexersegundo;
     public Text as_hora;
     public float tempoSimulado = 1f;
 
 
     public float hora;
     public float min;
-//    float temposim = 0.5f;
+    //    float temposim = 0.5f;
     float temporizador = 0f;
     float tpassado = 0f;
 
@@ -21,24 +19,24 @@ public class horasvelhas : MonoBehaviour
     {
         hora = 0f;
         min = 0f;
-    //        Debug.Log(DateTime.Now);
- //   Debug.Log(" vamo ver");
- //       Debug.Log(DateTime.Now);
+        //        Debug.Log(DateTime.Now);
+        //   Debug.Log(" vamo ver");
+        //       Debug.Log(DateTime.Now);
         tpassado = Time.deltaTime;
     }
 
     void Update()
     {
         temporizador += Time.deltaTime;
-//        Debug.Log("intervalo " + tempoSimulado);
-//        Debug.Log("temporizador " + temporizador);
-//        Debug.Log("tempo passado " + (temporizador - tpassado));
+        //        Debug.Log("intervalo " + tempoSimulado);
+        //        Debug.Log("temporizador " + temporizador);
+        //        Debug.Log("tempo passado " + (temporizador - tpassado));
 
         if (tempoSimulado < temporizador)
         {
             //            float tpassado = Time.deltaTime - temporizador;
             //           Debug.Log("tempo passado " + tpassado);
- //           Debug.Log("tempo andou");
+            //           Debug.Log("tempo andou");
             temporizador = Time.deltaTime;
             min++;
             if (min > 59f)

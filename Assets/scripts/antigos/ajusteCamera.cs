@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ajusteCamera : MonoBehaviour
@@ -14,10 +13,10 @@ public class ajusteCamera : MonoBehaviour
     {
         terreno = GameObject.Find("Terrain");
         Vector3 centro = centroCam();
-        offset = new Vector3(-centro.x - 3, alturaCam() / 3f, -centro.z-10);
+        offset = new Vector3(-centro.x - 3, alturaCam() / 3f, -centro.z - 10);
         transform.position = centro + offset;
-        transform.LookAt (centro);
-//        Debug.Log("centro: " + centro + " altura: " + offset);
+        transform.LookAt(centro);
+        //        Debug.Log("centro: " + centro + " altura: " + offset);
 
     }
 
@@ -29,11 +28,11 @@ public class ajusteCamera : MonoBehaviour
         float z = terreno.GetComponent<Terrain>().terrainData.size.z;
         if (z < x) { corda = x; } else { corda = z; }
 
-        float altura = (-corda  / Mathf.Sin(30)/2) ; 
-        return altura ;
+        float altura = (-corda / Mathf.Sin(30) / 2);
+        return altura;
     }
 
-    
+
     public void /*Vector3*/ centroCamBounds()
     {
         //        List<GameObject>  /////////EXEMPLO DE BOUNDS/////////////////////////////////////////////////////////////
@@ -71,11 +70,11 @@ public class ajusteCamera : MonoBehaviour
     {
 
         GameObject terreno = GameObject.Find("Terrain");
-//        Debug.Log("posicao do terreno: " + terreno.transform.position);
+        //        Debug.Log("posicao do terreno: " + terreno.transform.position);
         //        float corda;
 
-        Vector3 centroTerreno = new Vector3(terreno.GetComponent<Terrain>().terrainData.size.x/2, 0, terreno.GetComponent<Terrain>().terrainData.size.z/2);
-  //      Debug.Log("centro do terreno: " + centroTerreno);
+        Vector3 centroTerreno = new Vector3(terreno.GetComponent<Terrain>().terrainData.size.x / 2, 0, terreno.GetComponent<Terrain>().terrainData.size.z / 2);
+        //      Debug.Log("centro do terreno: " + centroTerreno);
 
         //Debug.Log("centro bounds: " + bounds.center);
         return centroTerreno;//  bounds.center;

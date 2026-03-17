@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 //using System.Linq;
 //using System.Data.Entity;
 
@@ -20,10 +18,10 @@ public class conectados : MonoBehaviour
     public cContatos testando;
     public string quemVi = " ";
 
-   
+
     //    public List<string> quemVi = new List<string>();
 
-    public bool esbarrei = false;  
+    public bool esbarrei = false;
 
     public void Start()
     {
@@ -72,11 +70,11 @@ public class conectados : MonoBehaviour
 
         if (quemVi == " ")
         {
-            Debug.Log("CONECTADOS-DIZ_ENCONTROS: eu, "+this.GetComponent<pessoa>().identidadepessoa + ", nao vi ninguem");
+            Debug.Log("CONECTADOS-DIZ_ENCONTROS: eu, " + this.GetComponent<pessoa>().identidadepessoa + ", nao vi ninguem");
             return;
         }
         Debug.Log("CONECTADOS-DIZ_ENCONTROS: eu, " + this.GetComponent<pessoa>().identidadepessoa + ", vi " + quemVi);
-//        Debug.Log("dizEncontros: eu, " + this.GetComponent<pessoa>().identidadepessoa + ", encontrei " + quemEncontrei.Count + "pessoas");
+        //        Debug.Log("dizEncontros: eu, " + this.GetComponent<pessoa>().identidadepessoa + ", encontrei " + quemEncontrei.Count + "pessoas");
     }
 
     /// <summary>
@@ -93,30 +91,30 @@ public class conectados : MonoBehaviour
     {
         DebugController.Log(DebugCategoria.conectados, $"seraQueEncontrei ▸ tracking");
 
-        
+
         cContatos tempcont = new cContatos(Ooutro.gameObject, 1);
         string tempquemVi = tempcont.contato.GetComponent<pessoa>().identidadepessoa.ToString();
         int idxcontato = quemEncontrei.IndexOf(quemEncontrei.Find(x => x.contato == tempcont.contato));
 
-//        Debug.Log("CONECTADOS - SERA Q ENCONTREI: encontrei o" + tempquemVi +"o index de quem encontrei agora eh: "+ idxcontato);
-//        dizEncontros();
+        //        Debug.Log("CONECTADOS - SERA Q ENCONTREI: encontrei o" + tempquemVi +"o index de quem encontrei agora eh: "+ idxcontato);
+        //        dizEncontros();
 
         if (idxcontato < 0)
         {
             quemEncontrei.Add(tempcont);
             quemVi += tempquemVi + " ";
-//            Debug.Log("CONECTADOS - SERA Q ENCONTREI: encontrei o " + tempquemVi + " pela 1a vez");
-//            dizEncontros();
+            //            Debug.Log("CONECTADOS - SERA Q ENCONTREI: encontrei o " + tempquemVi + " pela 1a vez");
+            //            dizEncontros();
 
         }
         else
         {
             quemEncontrei[idxcontato].horacont++;// horacont como marcador de quantas vezes encontrou
             quemVi += tempquemVi + " ";
-//            Debug.Log("CONECTADOS - SERA Q ENCONTREI: ja eh a " + quemEncontrei[idxcontato].horacont + "que vi o" + tempquemVi);
-//            dizEncontros();
+            //            Debug.Log("CONECTADOS - SERA Q ENCONTREI: ja eh a " + quemEncontrei[idxcontato].horacont + "que vi o" + tempquemVi);
+            //            dizEncontros();
         }
-        
+
     }
 
     private void OnTriggerExit(Collider other)
@@ -124,7 +122,7 @@ public class conectados : MonoBehaviour
         DebugController.Log(DebugCategoria.conectados, $"OnTriggerExit ▸ tracking {esbarrei}");
 
         esbarrei = !esbarrei;
-//        Debug.Log("CONECTADOS: TRIGGER EXIT: " + esbarrei);
+        //        Debug.Log("CONECTADOS: TRIGGER EXIT: " + esbarrei);
 
     }
 
@@ -134,16 +132,16 @@ public class conectados : MonoBehaviour
 
         //        Debug.Log("CONECTADOS: TRIGGER ENTER ");
         seraQueEncontrei(other.gameObject);
-//        this.ResetTrigger;
+        //        this.ResetTrigger;
 
     }
 
-//    private void OnTriggerStay(Collider other)
-//    {
-//        if (esbarrei) { return; }
-//        Debug.Log("CONECTADOS: TRIGGER STAY");
-//        seraQueEncontrei(other.gameObject);
-//        esbarrei = !esbarrei;
-//        return;
-//     }
+    //    private void OnTriggerStay(Collider other)
+    //    {
+    //        if (esbarrei) { return; }
+    //        Debug.Log("CONECTADOS: TRIGGER STAY");
+    //        seraQueEncontrei(other.gameObject);
+    //        esbarrei = !esbarrei;
+    //        return;
+    //     }
 }

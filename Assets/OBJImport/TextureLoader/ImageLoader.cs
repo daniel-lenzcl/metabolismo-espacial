@@ -3,11 +3,9 @@
  * Thanks to mikezila for improving the initial TGA loading code
 */
 
-using System;
-using UnityEngine;
-using System.Collections;
-using System.IO;
 using B83.Image.BMP;
+using System.IO;
+using UnityEngine;
 
 namespace Dummiesman
 {
@@ -77,7 +75,7 @@ namespace Dummiesman
             }
         }
 
-      
+
         /// <summary>
         /// Loads a texture from a file
         /// </summary>
@@ -121,11 +119,12 @@ namespace Dummiesman
                     if (crnFormatByte == 0)
                     {
                         crnTextureFormat = UnityEngine.TextureFormat.DXT1Crunched;
-                    }else if(crnFormatByte == 2)
+                    }
+                    else if (crnFormatByte == 2)
                     {
                         crnTextureFormat = UnityEngine.TextureFormat.DXT5Crunched;
                     }
-                    else if(crnFormatByte == 12)
+                    else if (crnFormatByte == 12)
                     {
                         crnTextureFormat = UnityEngine.TextureFormat.ETC2_RGBA8Crunched;
                     }
@@ -144,12 +143,12 @@ namespace Dummiesman
                     Debug.LogError("Could not load texture " + name + " because its format is not supported : " + fn);
                     break;
             }
-            
+
             if (returnTex != null)
             {
                 returnTex = ImageLoaderHelper.VerifyFormat(returnTex);
                 returnTex.name = Path.GetFileNameWithoutExtension(fn);
-            }                                           
+            }
 
             return returnTex;
         }

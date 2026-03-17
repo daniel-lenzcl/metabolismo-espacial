@@ -5,13 +5,10 @@
 //fora de uso, so para referencia.
 //fora de uso, so para referencia.
 
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using UnityEngine;
 //using UnityEngine.AI;
 
-using Unity.AI.Navigation;
 //using NavMeshSurface = Unity.AI.Navigation.NavMeshSurface;
 //using NavMeshModifier = Unity.AI.Navigation.NavMeshModifier;
 
@@ -21,7 +18,7 @@ public class pessoa : MonoBehaviour
     //public GameObject linha;
     //    private int id;
     //    private List<int> encontros;
-    private List<string> nomePredios; 
+    private List<string> nomePredios;
 
 
     private Vector3 casa;
@@ -50,16 +47,16 @@ public class pessoa : MonoBehaviour
     //private LineRenderer lRede = new LineRenderer();
 
     public int identidadepessoa;
-//    private string sdest;
+    //    private string sdest;
     public cPessoa euPessoa;
     private GameObject geral;
 
 
     private GameObject predioAtual; // prédio atual (casa ou trabalho)
     private UnityEngine.AI.NavMeshObstacle obstaculoAtual; // obstáculo a ser desativado
-//    private bool estaDentroDoPredio = false;
-//
-//    UnityEngine.AI.NavMeshAgent agente;    ///teste de custo do terreno - ja ta definido como jogador na linha 32
+                                                           //    private bool estaDentroDoPredio = false;
+                                                           //
+                                                           //    UnityEngine.AI.NavMeshAgent agente;    ///teste de custo do terreno - ja ta definido como jogador na linha 32
     Renderer rend;          ///teste de custo do terreno
 
     // Start is called before the first frame update
@@ -70,16 +67,16 @@ public class pessoa : MonoBehaviour
         //   contatos = new List<GameObject>();
         identidadepessoa = geral.GetComponent<levelgenerator>().contador;
         geral.GetComponent<levelgenerator>().contador++;
-//        euPessoa = geral.GetComponent<levelgenerator>().todasAsPessoas[identidadepessoa];//////////////////////////////////
+        //        euPessoa = geral.GetComponent<levelgenerator>().todasAsPessoas[identidadepessoa];//////////////////////////////////
         this.name = euPessoa.identidade;
 
         //        identidadepessoa = geral.nomepessoa;
-//        Debug.Log("PESSOA-START: nome da pessoa: " + this.name);
+        //        Debug.Log("PESSOA-START: nome da pessoa: " + this.name);
 
 
         jogador = this.GetComponent<UnityEngine.AI.NavMeshAgent>();
         jogador.speed = 50;// * geral.GetComponent<levelgenerator>().todasAsPessoas.Count;
-//        GameObject[] trabalhos = GameObject.FindGameObjectsWithTag("trabalho");
+                           //        GameObject[] trabalhos = GameObject.FindGameObjectsWithTag("trabalho");
 
         //        tipoDaPessoa = tiposPessoa[Random.Range(0, tiposPessoa.Length)];
         tipoDaPessoa = "jovem"; //APESAR DE EXISTIR, NAO ESTA SENDO COLOCADO EM USO
@@ -101,7 +98,7 @@ public class pessoa : MonoBehaviour
         //        trabalho = trabalhos[num_trab].transform.position;
 
         destino = predioAtual.transform.position;// o_casa.enderecoXYZ;// casa;
-//        jogador.SetDestination(destino);
+                                                 //        jogador.SetDestination(destino);
         jogador.stoppingDistance = 1f;
         jogador.areaMask = UnityEngine.AI.NavMesh.AllAreas;
 
@@ -121,7 +118,7 @@ public class pessoa : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-//        bool rodadia = GameObject.Find("Terrain").GetComponent<horas>().rodadia;
+        //        bool rodadia = GameObject.Find("Terrain").GetComponent<horas>().rodadia;
         bool rodadia = geral.GetComponent<horas>().rodadia;
         if (rodadia)
         {
@@ -138,17 +135,17 @@ public class pessoa : MonoBehaviour
 
                     switch (tempo)
                     {
-                            //private string[] dest = { "jardins", "alameda", "fonteLinear", "fonteCircular", "fonteFemininas", "coreto", "plataforma" };
-                            case 2:
+                        //private string[] dest = { "jardins", "alameda", "fonteLinear", "fonteCircular", "fonteFemininas", "coreto", "plataforma" };
+                        case 2:
                             destino = euPessoa.MmeuTrabalho.enderecoXYZ;//euPessoa.meuTrabalho.enderecoXYZ;//trabalho;
-//                            predioAtual = euPessoa.meuTrabalho.predioPreFab;
-                            //                                sdest = "trabalho";
+                                                                        //                            predioAtual = euPessoa.meuTrabalho.predioPreFab;
+                                                                        //                                sdest = "trabalho";
                             break;
 
-                            case 18:
-                                destino = euPessoa.MminhaCasa.enderecoXYZ; //euPessoa.minhaCasa.enderecoXYZ; //casa;
-  //                          predioAtual = euPessoa.minhaCasa.predioPreFab;
-                            //                                sdest = "casa";
+                        case 18:
+                            destino = euPessoa.MminhaCasa.enderecoXYZ; //euPessoa.minhaCasa.enderecoXYZ; //casa;
+                                                                       //                          predioAtual = euPessoa.minhaCasa.predioPreFab;
+                                                                       //                                sdest = "casa";
                             break;
                     }
                     /*
@@ -169,7 +166,7 @@ public class pessoa : MonoBehaviour
                     {
                         Debug.LogWarning($"{name} não está sobre a NavMesh.");
                     }
-//                    jogador.SetDestination(destino);   //DESCOBRIR PQ O TERRENO E A NAVMESH TA SE MEXENDO JUNTO COM O JOGADOR -  terreno estava com funcao de agente tb (o q significa funcao de agente tb?)
+                    //                    jogador.SetDestination(destino);   //DESCOBRIR PQ O TERRENO E A NAVMESH TA SE MEXENDO JUNTO COM O JOGADOR -  terreno estava com funcao de agente tb (o q significa funcao de agente tb?)
                     break;
             }
 
@@ -200,7 +197,7 @@ public class pessoa : MonoBehaviour
 
             ///monitoramento do custo do terreno
             ///
-            
+
             UnityEngine.AI.NavMeshHit hit;
             if (UnityEngine.AI.NavMesh.SamplePosition(transform.position, out hit, 1.0f, UnityEngine.AI.NavMesh.AllAreas))
             {
@@ -234,8 +231,8 @@ public class pessoa : MonoBehaviour
             }
             else
                 Debug.Log("nao achei navmesh?");
-            
-//            rend.material.color = Color.yellow;
+
+            //            rend.material.color = Color.yellow;
 
 
         }
