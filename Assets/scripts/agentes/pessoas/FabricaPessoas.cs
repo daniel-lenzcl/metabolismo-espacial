@@ -3,13 +3,36 @@ using UnityEngine;
 
 public class FabricaPessoas
 {
-    public TemplatePessoa CriarTemplate(string tipoId, RotinaBase rotinaBase)
+    private const string TipoIdOperario =
+        "a9833c69-a43c-481f-81df-fbd07e25521a";
+
+    private const string TipoIdCozinheiro =
+        "2e52a9c7-c0c2-46a5-8574-b1bb337a5645";
+
+    public TemplatePessoa CriarTemplate(string tipoId, string nomeExibicao, float percentualPopulacao, RotinaBase rotinaBase, bool editavel)
     {
         if (string.IsNullOrWhiteSpace(tipoId))
         {
-            Debug.LogError("TipoId inv�lido ao criar TemplatePessoa.");
+            Debug.LogError("TipoId inválido ao criar TemplatePessoa.");
             return null;
         }
+
+        if (string.IsNullOrWhiteSpace(nomeExibicao))
+        {
+            Debug.LogError(
+                $"Nome de exibição inválido para {tipoId}.");
+
+            return null;
+        }
+
+        if (percentualPopulacao < 0 || percentualPopulacao > 100)
+        {
+            Debug.LogError(
+                $"Percentual inválido para {tipoId}: " +
+                $"{percentualPopulacao}%.");
+            return null;
+        }
+
 
         if (rotinaBase == null)
         {
@@ -17,10 +40,15 @@ public class FabricaPessoas
             return null;
         }
 
-        return new TemplatePessoa(tipoId, rotinaBase);
+        return new TemplatePessoa(
+            tipoId,
+            nomeExibicao,
+            percentualPopulacao,
+            rotinaBase,
+            editavel);
     }
 
-    public TemplatePessoa CriarTemplateFromUI(string tipoId, List<SlotRotinaUI> slotsUI, out string erro)
+    public TemplatePessoa CriarTemplateFromUI(string tipoId, string nomeExibicao, float percentualPopulacao, List<SlotRotinaUI> slotsUI, out string erro)
     {
         erro = string.Empty;
 
@@ -29,8 +57,17 @@ public class FabricaPessoas
             Debug.LogError($"Erro ao criar rotina do tipo {tipoId}: {erro}");
             return null;
         }
+       
+        if (percentualPopulacao < 0f || percentualPopulacao > 100f)
+        {
+            Debug.LogError(
+                $"Percentual inválido para {tipoId}: " +
+                $"{percentualPopulacao:F2}%.");
 
-        return CriarTemplate(tipoId, rotinaBase);
+            return null;
+        }
+
+        return CriarTemplate(tipoId, nomeExibicao, percentualPopulacao, rotinaBase, true);
     }
 
     public List<TemplatePessoa> CriarTemplatesBase()
@@ -54,15 +91,20 @@ public class FabricaPessoas
         {
             slots = new List<RotinaSlot>
             {
-                new RotinaSlot(0,    120,  "casa"),        // 00:00 - 08:00
-                new RotinaSlot(120,  600,  "trabalho"),    // 08:00 - 12:00
-                new RotinaSlot(600,  840,  "restaurante"), // 12:00 - 14:00
-                new RotinaSlot(840,  1080, "trabalho"),    // 14:00 - 18:00
-                new RotinaSlot(1080, 1440, "casa")         // 18:00 - 24:00
+                new RotinaSlot("dormir", 0,    120,  "casa"),        // 00:00 - 08:00
+                new RotinaSlot("trabalhar", 120,  600,  "trabalho"),    // 08:00 - 12:00
+                new RotinaSlot("almocar",600,  840,  "restaurante"), // 12:00 - 14:00
+                new RotinaSlot("trabalhar",840,  1080, "trabalho"),    // 14:00 - 18:00
+                new RotinaSlot("dormir",1080, 1440, "casa")         // 18:00 - 24:00
             }
         };
 
-        return CriarTemplate("operario", rotinaBase);
+        return CriarTemplate(
+            TipoIdOperario,
+            "Operário",
+            50.00f,
+            rotinaBase,
+            false);
     }
 
     private TemplatePessoa CriarCozinheiroBase()
@@ -71,12 +113,17 @@ public class FabricaPessoas
         {
             slots = new List<RotinaSlot>
             {
-                new RotinaSlot(0,    600,  "casa"),         // 00:00 - 10:00
-                new RotinaSlot(600,  1220,  "restaurante"), // 10:00 - 22:00
-                new RotinaSlot(1220, 1440, "casa")         // 18:00 - 24:00
+                new RotinaSlot("dormir", 0,    600,  "casa"),         // 00:00 - 10:00
+                new RotinaSlot("trabalhar", 600,  1220,  "restaurante"), // 10:00 - 22:00
+                new RotinaSlot("dormir", 1220, 1440, "casa")         // 18:00 - 24:00
             }
         };
 
-        return CriarTemplate("cozinheiro", rotinaBase);
+        return CriarTemplate(
+            TipoIdCozinheiro,
+            "Cozinheiro",
+            50.00f,
+            rotinaBase,
+            true);
     }
 }

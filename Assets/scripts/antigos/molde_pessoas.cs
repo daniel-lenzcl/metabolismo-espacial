@@ -1,3 +1,4 @@
+/*
 using System.Collections.Generic;
 
 
@@ -38,7 +39,7 @@ public class molde_pessoas
         if (tarefas != null && tarefas.Count > 0) return tarefas;
 
         // Conversão legada desativada — mantida como comentário para referência.
-        /*
+        
         var lista = new List<TarefaRotina>();
         AdicionarTarefaFromLegado(lista, atv_08_10, 8, 10);
         AdicionarTarefaFromLegado(lista, atv_10_12, 10, 12);
@@ -51,19 +52,20 @@ public class molde_pessoas
         // Não modifica 'tarefas' automaticamente — apenas retorna a lista construída.
         // Se preferir persistir a conversão, atribua 'tarefas = lista' no gerente ao carregar.
         return lista;
-        */
+        
 
         // Retorna a lista atual (vazia se não houver tarefas definidas).
         return tarefas;
     }
 
     // Método legada comentado — mantido aqui apenas como referência.
-    /*
+    
     void AdicionarTarefaFromLegado(List<TarefaRotina> lista, string atividade, int inicio, int fim)
     {
         if (string.IsNullOrEmpty(atividade)) return;
         var t = new TarefaRotina(inicio, fim, atividade);
         lista.Add(t);
     }
-    */
+    
 }
+*/

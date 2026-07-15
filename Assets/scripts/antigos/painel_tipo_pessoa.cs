@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -131,3 +132,5 @@ public class painel_tipo_pessoa : MonoBehaviour
 
     }
 }
+
+*/

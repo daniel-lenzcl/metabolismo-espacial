@@ -467,6 +467,7 @@ public class cPessoa
         OnCasaDefinida.Invoke();
     }
 
+    /*
     public void InicializaEnderecosAntigo()
     {
         DebugController.Log(DebugCategoria.tracking, $"InicializaEnderecos ▸ tracking");
@@ -658,7 +659,7 @@ public class cPessoa
         UpdateEditorListFromDict();
         OnCasaDefinida.Invoke();
     }
-
+    */
     // sincroniza a lista visível no Inspector a partir do dicionário em runtime
     private void UpdateEditorListFromDict()
     {

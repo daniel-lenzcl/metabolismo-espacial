@@ -11,9 +11,6 @@ public class Gerente_de_ambiente : MonoBehaviour
     //    public GerentePredios;
     public UnityEvent OnPrediosCarregados = new UnityEvent();
 
-    public List<molde_pessoas> lista_tipos_pessoas = new List<molde_pessoas>();
-    public painel_tipo_pessoa atualizacao_de_pessoas;
-
     public List<Predios> lista_dos_predios = new List<Predios>();
     public List<mPredios> mlista_dos_predios = new List<mPredios>();
 
@@ -31,18 +28,19 @@ public class Gerente_de_ambiente : MonoBehaviour
 
     void OnEnable()
     {
-        painel_tipo_pessoa.OnPainelAtivado += TentarInscricao;
-        DebugController.Log(DebugCategoria.GerenteAmbiente, "OnEnable ▸ inscrito no evento PainelAtivado");
+//        painel_tipo_pessoa.OnPainelAtivado += TentarInscricao;
+//        DebugController.Log(DebugCategoria.GerenteAmbiente, "OnEnable ▸ inscrito no evento PainelAtivado");
     }
 
     void OnDisable()
     {
-        painel_tipo_pessoa.OnPainelAtivado -= TentarInscricao;
-        DebugController.Log(DebugCategoria.GerenteAmbiente, "OnDisable ▸ desinscrito do evento PainelAtivado");
+//        painel_tipo_pessoa.OnPainelAtivado -= TentarInscricao;
+//        DebugController.Log(DebugCategoria.GerenteAmbiente, "OnDisable ▸ desinscrito do evento PainelAtivado");
     }
 
     void TentarInscricao()
     {
+    /*
         DebugController.Log(DebugCategoria.GerenteAmbiente, "TentarInscricao ▸ procurando painel_tipo_pessoa");
 
         atualizacao_de_pessoas = FindObjectOfType<painel_tipo_pessoa>();
@@ -55,11 +53,11 @@ public class Gerente_de_ambiente : MonoBehaviour
         // subscribe ao evento do painel 
         atualizacao_de_pessoas.OnAtualizaPessoas += Atualizar_lista;
         DebugController.Log(DebugCategoria.GerenteAmbiente, "Inscrição feita com sucesso!");
+    */
     }
 
     void Start()
     {
-        lista_tipos_pessoas.Clear();
         lista_dos_predios.Clear();
         inicializar_pessoas();
         DebugController.Log(DebugCategoria.GerenteAmbiente, "Start ▸ listas limpas e pessoas iniciais criadas");
@@ -75,8 +73,11 @@ public class Gerente_de_ambiente : MonoBehaviour
 //        Total_Pessoas = gerentePessoas.PopularPessoas(lista_tipos_pessoas, lista_dos_predios);
 //        DebugController.Log(DebugCategoria.GerenteAmbiente, $"Total de pessoas populadas: {Total_Pessoas}");
     }
+
+    /*
     private void Atualizar_lista(molde_pessoas pessoatemp)
     {
+    
         DebugController.Log(DebugCategoria.GerenteAmbiente, $"Atualizando ambiente tipo: {pessoatemp.tipo_pessoa}");
 
         molde_pessoas pessoaExistente = lista_tipos_pessoas.FirstOrDefault(p => p.tipo_pessoa == pessoatemp.tipo_pessoa);
@@ -101,17 +102,29 @@ public class Gerente_de_ambiente : MonoBehaviour
         }
 
         atualizacao_de_pessoas.PreencheDropDownOpcoesPessoas();
+    
     }
+    */
 
     void inicializar_pessoas()
     {
-        gerentePessoas.InicializarTemplatesBase();
 
-        var demografia = new Dictionary<string, int>
+        bool catalogoInicializado = gerentePessoas.InicializarCatalogo();
+
+        if (!catalogoInicializado)
         {
-            { "operario", 80 },
-            { "cozinheiro", 20 }
-        };
+            Debug.LogError(
+                "Não foi possível inicializar o catálogo de pessoas.");
+        }
+        //        gerentePessoas.InicializarTemplatesBase();
+
+        //        var demografia = new Dictionary<string, int>
+        //        {
+        //            { "operario", 80 },
+        //            { "cozinheiro", 20 }
+        //        };
+
+        /*
         gerentePessoas.DefinirQuantidadePorTemplate(demografia);
 
         molde_pessoas operario = new molde_pessoas("operario");
@@ -122,9 +135,10 @@ public class Gerente_de_ambiente : MonoBehaviour
         operario.atv_16_18 = "trabalho";
         operario.atv_18_20 = "casa";
         operario.atv_20_08 = "casa";
-
+        
         lista_tipos_pessoas.Add(operario);
-        DebugController.Log(DebugCategoria.GerenteAmbiente, $"categorias de Pessoas iniciais: {lista_tipos_pessoas.Count}");
+        */
+        //        DebugController.Log(DebugCategoria.GerenteAmbiente, $"categorias de Pessoas iniciais: {lista_tipos_pessoas.Count}");
     }
 
     public void PrediosCarregados()

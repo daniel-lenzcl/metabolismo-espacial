@@ -6,28 +6,16 @@ public abstract class GerenteAgentes<TAgente, TTemplate, TFabrica> : MonoBehavio
 {
     protected Gerente_de_ambiente gerenteAmbiente;
 
-    [SerializeField] protected GameObject prefabAgente;
+    [SerializeField] 
+    protected GameObject prefabAgente;
 
     protected Dictionary<string, TTemplate> colecaoTemplates;
-    protected Dictionary<string, int> percentualPorTemplate;
     protected Dictionary<int, TAgente> registroAgentes;
-
-    public IReadOnlyDictionary<string, int> quantidadePorTipo => percentualPorTemplate;
+    //    protected Dictionary<string, int> percentualPorTemplate;
 
     protected TFabrica fabrica;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-
+    /*
     public void DefinirQuantidadePorTemplate(Dictionary<string, int> quantidadeRecebida)
     {
         if (quantidadeRecebida == null)
@@ -43,4 +31,5 @@ public abstract class GerenteAgentes<TAgente, TTemplate, TFabrica> : MonoBehavio
             Debug.Log(item.Key + " : " + item.Value);
         }
     }
+    */
 }
